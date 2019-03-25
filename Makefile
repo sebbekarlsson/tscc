@@ -1,6 +1,7 @@
 flags = -Wall -fPIC -g
 exec = tscc.out
-objects = $(wildcard src/*.c)
+sources = $(wildcard src/*.c)
+objects = $(sources:.c=.o)
 
 
 $(exec): $(objects)
