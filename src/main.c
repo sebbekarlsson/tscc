@@ -3,6 +3,7 @@
 #include "include/io.h"
 #include "include/lex.h"
 #include "include/parse.h"
+#include "include/visit.h"
 
 
 int main(int argc, char* argv[]) {
@@ -10,7 +11,8 @@ int main(int argc, char* argv[]) {
     lexer* l = init_lexer(contents);
     parser* p = init_parser(l);
 
-    parser_parse(p);
+    AST* tree = (AST*) parser_parse(p);
+    visit(tree);
 
     return 0;
 }
