@@ -25,7 +25,7 @@ lexer* init_lexer(char* contents) {
  * @param lexer* l
  */
 void lexer_advance(lexer* l) {
-    if (l->current_char != '\0' && l->pointer < strlen(l->contents)) {
+    if (l->current_char != '\0') {
         l->pointer += 1;
         l->current_char = l->contents[l->pointer];
     }
@@ -37,7 +37,7 @@ void lexer_advance(lexer* l) {
  * @param lexer* l
  */
 void lexer_skip_whitespace(lexer* l) {
-    while (l->current_char == ' ' || (int)l->current_char == 10)
+    while (l->current_char == ' ' || (int) l->current_char == 10)
         lexer_advance(l);
 }
 
@@ -99,8 +99,6 @@ token* lexer_collect_string(lexer* l) {
 token* lexer_collect_integer(lexer* l) {
     char* buffer = calloc(2, sizeof(char));
 
-    lexer_advance(l);
-
     buffer[0] = l->current_char;
     buffer[1] = '\0';
 
@@ -116,8 +114,6 @@ token* lexer_collect_integer(lexer* l) {
         lexer_advance(l);
     }
 
-    lexer_advance(l);
-
     return init_token(TOKEN_INTEGER_VALUE, buffer); 
 }
 
@@ -130,7 +126,7 @@ token* lexer_collect_integer(lexer* l) {
  */
 token* lexer_get_next_token(lexer* l) {
     while (l->current_char != '\0' && l->pointer < strlen(l->contents) - 1) {
-        if (l->current_char == ' ' || (int)l->current_char == 10)
+        if (l->current_char == ' ' || (int) l->current_char == 10)
             lexer_skip_whitespace(l);
 
         if (isdigit(l->current_char))
@@ -194,6 +190,21 @@ token* lexer_get_next_token(lexer* l) {
             } break;
             case '+': {
                 token* t = init_token(TOKEN_PLUS, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
+            case '-': {
+                token* t = init_token(TOKEN_MINUS, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
+            case '/': {
+                token* t = init_token(TOKEN_DIVIDE, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
+            case '*': {
+                token* t = init_token(TOKEN_MULTIPLY, current_char_str);
                 lexer_advance(l);
                 return t;
             } break;

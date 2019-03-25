@@ -85,6 +85,8 @@ AST* parser_parse_statement(parser* p) {
         return parser_parse_expr(p);
     }
 
+    return parser_parse_expr(p);
+
     return (void*) 0;
 }
 
@@ -100,8 +102,6 @@ AST* parser_parse_expr(parser* p) {
             parser_eat(p, TOKEN_PLUS);
         }
 
-        printf("You are getting a nice lovely binop!\n");
-
         node = (AST*) init_ast_binop(t, node, parser_parse_term(p));
     }
 
@@ -111,7 +111,19 @@ AST* parser_parse_expr(parser* p) {
 AST* parser_parse_term(parser* p) {
     AST* node = parser_parse_factor(p);
 
-    // token* t = (void*) 0;
+    token* t = (void*) 0;
+
+    while (p->current_token->type == TOKEN_DIVIDE || p->current_token->type == TOKEN_MULTIPLY) {
+        t = p->current_token;
+
+        if (p->current_token->type == TOKEN_DIVIDE) {
+            parser_eat(p, TOKEN_DIVIDE);
+        } else if (p->current_token->type == TOKEN_MULTIPLY) {
+            parser_eat(p, TOKEN_MULTIPLY);
+        }
+
+        node = (AST*) init_ast_binop(t, node, parser_parse_factor(p));
+    }
 
     return node;
 }
@@ -122,6 +134,14 @@ AST* parser_parse_factor(parser* p) {
     if (t->type == TOKEN_INTEGER_VALUE) {
         parser_eat(p, TOKEN_INTEGER_VALUE);
         return (AST*) init_ast_integer(t);
+    }
+
+    if (t->type == TOKEN_LPAREN) {
+        parser_eat(p, TOKEN_LPAREN);
+        AST* expr = parser_parse_expr(p);
+        parser_eat(p, TOKEN_RPAREN);
+
+        return expr;
     }
 
     return parser_parse_expr(p);
