@@ -13,7 +13,9 @@ typedef struct TOKEN_STRUCT {
         TOKEN_COLON,
         TOKEN_SEMI,
         TOKEN_COMMA,
-        TOKEN_STRING_VALUE
+        TOKEN_STRING_VALUE,
+        TOKEN_INTEGER_VALUE,
+        TOKEN_PLUS
     } type;
 
     char* value;

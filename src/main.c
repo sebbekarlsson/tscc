@@ -1,20 +1,16 @@
 #include <stdio.h>
+#include "include/token.h"
 #include "include/io.h"
 #include "include/lex.h"
-#include "include/token.h"
+#include "include/parse.h"
 
 
 int main(int argc, char* argv[]) {
     char* contents = read_file(argv[1]);
     lexer* l = init_lexer(contents);
+    parser* p = init_parser(l);
 
-    token* a = lexer_get_next_token(l);
-    printf("%s\n", a->value);
-
-    while (a->type != TOKEN_EOF) {
-        a = lexer_get_next_token(l);
-        printf("%s\n", a->value);
-    }
+    parser_parse(p);
 
     return 0;
 }

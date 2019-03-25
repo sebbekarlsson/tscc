@@ -3,9 +3,9 @@
 
 
 AST_compound* init_ast_compound(token* t, dynamic_list* children) {
-    AST_compound* a = calloc(1, sizeof(struct AST_COMPOUND_STRUCT));
-    a->children = children; 
-    AST_constructor((AST*) a, t);
+    AST_compound* compound = calloc(1, sizeof(struct AST_COMPOUND_STRUCT));
+    compound->children = children; 
+    AST_constructor((AST*) compound, t);
 
-    return a;
+    return compound;
 }

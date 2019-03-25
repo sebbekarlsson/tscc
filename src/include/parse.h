@@ -4,6 +4,8 @@
 #include "lex.h"
 #include "AST.h"
 #include "ASTCompound.h"
+#include "ASTBinop.h"
+#include "ASTInteger.h"
 typedef struct PARSER_STRUCT {
     token* current_token;
     lexer* l;
@@ -18,4 +20,10 @@ AST_compound* parser_parse(parser* p);
 AST_compound* parser_parse_compound(parser* p);
 
 AST* parser_parse_statement(parser* p);
+
+AST* parser_parse_expr(parser* p);
+
+AST* parser_parse_term(parser* p);
+
+AST* parser_parse_factor(parser* p);
 #endif

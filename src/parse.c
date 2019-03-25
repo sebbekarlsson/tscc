@@ -54,7 +54,7 @@ AST_compound* parser_parse(parser* p) {
  * @return AST_compound*
  */
 AST_compound* parser_parse_compound(parser* p) {
-    dynamic_list* children = init_dynamic_list(sizeof(struct AST_STRUCT));
+    dynamic_list* children = init_dynamic_list(sizeof(AST*));
 
     AST* statement = parser_parse_statement(p);
     dynamic_list_append(children, statement);
@@ -77,5 +77,52 @@ AST_compound* parser_parse_compound(parser* p) {
  * @return AST*
  */
 AST* parser_parse_statement(parser* p) {
+    if (
+        p->current_token->type == TOKEN_ID ||
+        p->current_token->type == TOKEN_INTEGER_VALUE ||
+        p->current_token->type == TOKEN_STRING_VALUE
+    ) {
+        return parser_parse_expr(p);
+    }
+
     return (void*) 0;
+}
+
+AST* parser_parse_expr(parser* p) {
+    AST* node = parser_parse_term(p);
+
+    token* t = (void*) 0;
+
+    while (p->current_token->type == TOKEN_PLUS) {
+        t = p->current_token;
+
+        if (p->current_token->type == TOKEN_PLUS) {
+            parser_eat(p, TOKEN_PLUS);
+        }
+
+        printf("You are getting a nice lovely binop!\n");
+
+        node = (AST*) init_ast_binop(t, node, parser_parse_term(p));
+    }
+
+    return node;
+}
+
+AST* parser_parse_term(parser* p) {
+    AST* node = parser_parse_factor(p);
+
+    // token* t = (void*) 0;
+
+    return node;
+}
+
+AST* parser_parse_factor(parser* p) {
+    token* t = p->current_token;
+
+    if (t->type == TOKEN_INTEGER_VALUE) {
+        parser_eat(p, TOKEN_INTEGER_VALUE);
+        return (AST*) init_ast_integer(t);
+    }
+
+    return parser_parse_expr(p);
 }

@@ -96,6 +96,31 @@ token* lexer_collect_string(lexer* l) {
     return init_token(TOKEN_STRING_VALUE, buffer); 
 }
 
+token* lexer_collect_integer(lexer* l) {
+    char* buffer = calloc(2, sizeof(char));
+
+    lexer_advance(l);
+
+    buffer[0] = l->current_char;
+    buffer[1] = '\0';
+
+    lexer_advance(l);
+
+    while (isdigit(l->current_char)) {
+        char* current_char_str = calloc(2, sizeof(char));
+        current_char_str[0] = l->current_char;
+        current_char_str[1] = '\0';
+
+        strcat(buffer, current_char_str);
+
+        lexer_advance(l);
+    }
+
+    lexer_advance(l);
+
+    return init_token(TOKEN_INTEGER_VALUE, buffer); 
+}
+
 /**
  * Receive the next token of the lexer instance
  *
@@ -108,8 +133,11 @@ token* lexer_get_next_token(lexer* l) {
         if (l->current_char == ' ' || (int)l->current_char == 10)
             lexer_skip_whitespace(l);
 
+        if (isdigit(l->current_char))
+            return lexer_collect_integer(l);
+
         if (isalnum(l->current_char))
-            return lexer_collect_id(l);
+            return lexer_collect_id(l); 
 
         char* current_char_str = calloc(2, sizeof(char));
         current_char_str[0] = l->current_char;
@@ -161,6 +189,11 @@ token* lexer_get_next_token(lexer* l) {
             } break;
             case ';': {
                 token* t = init_token(TOKEN_SEMI, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
+            case '+': {
+                token* t = init_token(TOKEN_PLUS, current_char_str);
                 lexer_advance(l);
                 return t;
             } break;
