@@ -41,6 +41,11 @@ void lexer_skip_whitespace(lexer* l) {
         lexer_advance(l);
 }
 
+/**
+ * Collects an identifier
+ *
+ * @return token*
+ */
 token* lexer_collect_id(lexer* l) {
     char* buffer = calloc(2, sizeof(char));
     buffer[0] = l->current_char;
@@ -61,6 +66,11 @@ token* lexer_collect_id(lexer* l) {
     return init_token(TOKEN_ID, buffer);
 }
 
+/**
+ * Collects a string starting with " and ending with "
+ *
+ * @return token*
+ */
 token* lexer_collect_string(lexer* l) {
     char* buffer = calloc(2, sizeof(char));
 

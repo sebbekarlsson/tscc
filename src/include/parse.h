@@ -3,6 +3,7 @@
 #include "token.h"
 #include "lex.h"
 #include "AST.h"
+#include "ASTCompound.h"
 typedef struct PARSER_STRUCT {
     token* current_token;
     lexer* l;
@@ -12,9 +13,9 @@ parser* init_parser(lexer* l);
 
 void parser_eat(parser* p, int token_type);
 
-AST* parser_parse(parser* p);
+AST_compound* parser_parse(parser* p);
 
-AST* parser_parse_compound(parser* p);
+AST_compound* parser_parse_compound(parser* p);
 
 AST* parser_parse_statement(parser* p);
 #endif
