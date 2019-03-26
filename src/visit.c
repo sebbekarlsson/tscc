@@ -1,8 +1,13 @@
 #include "include/visit.h"
+#include "include/remap.h"
 #include <stdio.h>
 #include <string.h>
 
-
+/**
+ * Main entry point for visiting
+ *
+ * @param AST* node
+ */
 void visit(AST* node) {
     if (!node)
         return;
@@ -26,6 +31,12 @@ void visit(AST* node) {
         case AST_VARIABLE_DEFINITION:
             return visit_ast_variable_definition((AST_variable_definition*) node);
         break;
+        case AST_FUNCTION_CALL:
+            return visit_ast_function_call((AST_function_call*) node);
+        break;
+        case AST_STRING:
+            return visit_ast_string((AST_string*) node);
+        break;
     }
 }
 
@@ -41,9 +52,16 @@ void visit_ast_integer(AST_integer* node) {
     printf(((AST*)node)->token->value);
 }
 
+void visit_ast_string(AST_string* node) {
+    printf("\"");
+    printf(((AST*)node)->token->value);
+    printf("\"");
+}
+
 void visit_ast_compound(AST_compound* node) {
-    for (int i = 0; i < node->children->size; i++)
-        visit((AST*) node->children->items[i]);
+    for (int i = 0; i < node->children->size; i++) {
+        visit((AST*) node->children->items[i]); printf(";");
+    }
 }
 
 void visit_ast_datatype(AST_datatype* node) {
@@ -83,4 +101,23 @@ void visit_ast_variable_definition(AST_variable_definition* node) {
     visit((AST*) node->datatype);
     printf(" ");
     printf(node->name);
+    
+    if (node->value) {
+        printf(" = ");
+        visit(node->value);
+    }
+}
+
+void visit_ast_function_call(AST_function_call* node) {
+    printf(remap_function(node->name));
+    printf("(");
+
+    for (int i = 0; i < node->args->size; i++) {
+        visit((AST*) node->args->items[i]);
+
+        if (i < node->args->size - 1)
+            printf(", ");
+    }
+
+    printf(")");
 }

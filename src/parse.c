@@ -88,9 +88,21 @@ AST* parser_parse_statement(parser* p) {
     if (p->current_token->type == TOKEN_FUNCTION_TYPE)
         return (AST*) parser_parse_function_definition(p);
 
+    if (p->current_token->type == TOKEN_LET) {
+        parser_eat(p, TOKEN_LET);
+        return (AST*) parser_parse_variable_definition(p);
+    }
+
     return (void*) 0;
 }
 
+/**
+ * Parses an expression
+ *
+ * @param parser* p
+ *
+ * @return AST*
+ */
 AST* parser_parse_expr(parser* p) {
     AST* node = parser_parse_term(p);
 
@@ -109,6 +121,13 @@ AST* parser_parse_expr(parser* p) {
     return node;
 }
 
+/**
+ * Parses division, multiplication
+ *
+ * @param parser* p
+ *
+ * @return AST*
+ */
 AST* parser_parse_term(parser* p) {
     AST* node = parser_parse_factor(p);
 
@@ -129,6 +148,13 @@ AST* parser_parse_term(parser* p) {
     return node;
 }
 
+/**
+ * Parses factorial, integers, numbers, functions, objects etc. (values?)
+ *
+ * @param parser* p
+ *
+ * @return AST*
+ */
 AST* parser_parse_factor(parser* p) {
     token* t = p->current_token;
 
@@ -149,9 +175,54 @@ AST* parser_parse_factor(parser* p) {
         return (AST*) parser_parse_function_definition(p);
     }
 
+    if (t->type == TOKEN_ID) {
+        return parser_parse_id(p);
+    }
+
+    if (t->type == TOKEN_STRING_VALUE) {
+        parser_eat(p, TOKEN_STRING_VALUE);
+        return (AST*) init_ast_string(t);
+    } 
+
     return parser_parse_expr(p);
 }
 
+AST* parser_parse_id(parser* p) {
+    token* t = p->current_token;
+    parser_eat(p, TOKEN_ID);
+
+    if (p->current_token->type == TOKEN_LPAREN)
+        return (AST*) parser_parse_function_call(p, t);
+
+    return (void*) 0;
+}
+
+AST_function_call* parser_parse_function_call(parser* p, token* t) {
+    char* name = t->value;
+    dynamic_list* args = init_dynamic_list(sizeof(struct AST_STRUCT));
+    parser_eat(p, TOKEN_LPAREN);
+
+    AST* expr = parser_parse_expr(p);
+    dynamic_list_append(args, expr);
+    
+    while (p->current_token->type == TOKEN_COMMA) {
+        parser_eat(p, TOKEN_COMMA);
+        expr = parser_parse_expr(p); 
+        dynamic_list_append(args, expr);
+    }
+
+    parser_eat(p, TOKEN_RPAREN);
+
+    return init_ast_function_call(t, name, args);
+}
+
+/**
+ * Parses a function definition
+ *
+ * @param parser* p
+ *
+ * @return AST_function_definition*
+ */
 AST_function_definition* parser_parse_function_definition(parser* p) {
     parser_eat(p, TOKEN_FUNCTION_TYPE);
     dynamic_list* args = init_dynamic_list(sizeof(struct AST_VARIABLE_DEFINITION_STRUCT));
@@ -180,6 +251,13 @@ AST_function_definition* parser_parse_function_definition(parser* p) {
     return init_ast_function_definition(p->current_token, name, args, compound, datatype);
 }
 
+/**
+ * Parses a variable definition
+ *
+ * @param parser* p
+ *
+ * @return AST_variable_definition*
+ */
 AST_variable_definition* parser_parse_variable_definition(parser* p) {
     char* name = p->current_token->value;
     AST* value = (void*) 0;
@@ -196,6 +274,13 @@ AST_variable_definition* parser_parse_variable_definition(parser* p) {
     return init_ast_variable_definition(p->current_token, name, value, datatype);
 }
 
+/**
+ * Parses a datatype
+ *
+ * @param parser* p
+ *
+ * @return AST_datatype*
+ */
 AST_datatype* parser_parse_data_type(parser* p) {
     token* t = p->current_token;
 

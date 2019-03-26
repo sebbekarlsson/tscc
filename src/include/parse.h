@@ -6,9 +6,11 @@
 #include "ASTCompound.h"
 #include "ASTBinop.h"
 #include "ASTInteger.h"
+#include "ASTString.h"
 #include "ASTDatatype.h"
 #include "ASTFunctionDefinition.h"
 #include "ASTVariableDefinition.h"
+#include "ASTFunctionCall.h"
 typedef struct PARSER_STRUCT {
     token* current_token;
     lexer* l;
@@ -35,4 +37,8 @@ AST_function_definition* parser_parse_function_definition(parser* p);
 AST_variable_definition* parser_parse_variable_definition(parser* p);
 
 AST_datatype* parser_parse_data_type(parser* p);
+
+AST* parser_parse_id(parser* p);
+
+AST_function_call* parser_parse_function_call(parser* p, token* t);
 #endif

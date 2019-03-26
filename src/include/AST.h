@@ -5,10 +5,12 @@ typedef struct AST_STRUCT {
     enum {
         AST_BINOP,
         AST_INTEGER,
+        AST_STRING,
         AST_COMPOUND,
         AST_DATATYPE,
         AST_FUNCTION_DEFINITION,
-        AST_VARIABLE_DEFINITION
+        AST_VARIABLE_DEFINITION,
+        AST_FUNCTION_CALL
     } type;
 
     token* token;
