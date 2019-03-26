@@ -24,7 +24,9 @@ typedef struct TOKEN_STRUCT {
         TOKEN_MINUS,
         TOKEN_DIVIDE,
         TOKEN_MULTIPLY,
-        TOKEN_FUNCTION_TYPE
+        TOKEN_FUNCTION_TYPE,
+        TOKEN_IF,
+        TOKEN_ELSE
     } type;
 
     char* value;

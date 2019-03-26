@@ -37,6 +37,9 @@ void visit(AST* node) {
         case AST_STRING:
             return visit_ast_string((AST_string*) node);
         break;
+        case AST_IF:
+            return visit_ast_if((AST_if*) node);
+        break;
     }
 }
 
@@ -120,4 +123,22 @@ void visit_ast_function_call(AST_function_call* node) {
     }
 
     printf(")");
+}
+
+void visit_ast_if(AST_if* node) {
+    if (node->expr) {
+        printf("if");
+        printf("(");
+        visit(node->expr);
+        printf(")");
+    }
+
+    printf("{\n");
+    visit((AST*) node->compound);
+    printf("\n}");
+    
+    if (node->otherwise) {
+        printf("else ");
+        visit(node->otherwise);
+    }
 }

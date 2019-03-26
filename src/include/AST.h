@@ -10,7 +10,8 @@ typedef struct AST_STRUCT {
         AST_DATATYPE,
         AST_FUNCTION_DEFINITION,
         AST_VARIABLE_DEFINITION,
-        AST_FUNCTION_CALL
+        AST_FUNCTION_CALL,
+        AST_IF
     } type;
 
     token* token;

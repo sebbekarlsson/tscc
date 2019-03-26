@@ -9,6 +9,7 @@
 #include "ASTFunctionDefinition.h"
 #include "ASTVariableDefinition.h"
 #include "ASTFunctionCall.h"
+#include "ASTIf.h"
 void visit(AST* node);
 
 void visit_ast_binop(AST_binop* node);
@@ -26,4 +27,6 @@ void visit_ast_function_definition(AST_function_definition* node);
 void visit_ast_variable_definition(AST_variable_definition* node);
 
 void visit_ast_function_call(AST_function_call* node);
+
+void visit_ast_if(AST_if* node);
 #endif

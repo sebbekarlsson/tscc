@@ -93,6 +93,10 @@ AST* parser_parse_statement(parser* p) {
         return (AST*) parser_parse_variable_definition(p);
     }
 
+    if (p->current_token->type == TOKEN_IF) {
+        return (AST*) parser_parse_if(p);
+    }
+
     return (void*) 0;
 }
 
@@ -309,4 +313,27 @@ AST_datatype* parser_parse_data_type(parser* p) {
     }
 
     return init_ast_datatype(t, is_list);
+}
+
+AST_if* parser_parse_if(parser* p) {
+    AST* expr = (void*) 0;
+    AST_if* otherwise = (void*) 0;
+
+    if (p->current_token->type == TOKEN_IF) {
+        parser_eat(p, TOKEN_IF);
+        parser_eat(p, TOKEN_LPAREN);
+        expr = parser_parse_expr(p);
+        parser_eat(p, TOKEN_RPAREN);
+    }
+
+    parser_eat(p, TOKEN_LBRACE);
+    AST_compound* compound = parser_parse_compound(p);
+    parser_eat(p, TOKEN_RBRACE);
+
+    if (p->current_token->type == TOKEN_ELSE) {
+        parser_eat(p, TOKEN_ELSE);
+        otherwise = parser_parse_if(p);
+    }
+
+    return init_ast_if(p->current_token, expr, compound, otherwise);
 }
