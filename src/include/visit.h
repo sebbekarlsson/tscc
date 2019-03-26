@@ -1,9 +1,14 @@
 #ifndef TSCC_VISIT_H
 #define TSCC_VISIT_H
 #include "AST.h"
-AST* visit(AST* node);
+#include "ASTCompound.h"
+#include "ASTBinop.h"
+#include "ASTInteger.h"
+void visit(AST* node);
 
-AST* visit_ast_binop(AST* node);
+void visit_ast_binop(AST_binop* node);
 
-AST* visit_ast_integer(AST* node);
+void visit_ast_integer(AST_integer* node);
+
+void visit_ast_compound(AST_compound* node);
 #endif
