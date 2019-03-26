@@ -47,6 +47,8 @@ void lexer_skip_whitespace(lexer* l) {
  * @return token*
  */
 token* lexer_collect_id(lexer* l) {
+    int type = TOKEN_ID;
+
     char* buffer = calloc(2, sizeof(char));
     buffer[0] = l->current_char;
     buffer[1] = '\0';
@@ -63,7 +65,16 @@ token* lexer_collect_id(lexer* l) {
         lexer_advance(l);
     }
 
-    return init_token(TOKEN_ID, buffer);
+    if (strcmp(buffer, "function") == 0)
+        type = TOKEN_FUNCTION_TYPE;
+    else if (strcmp(buffer, "number") == 0)
+        type = TOKEN_INTEGER_TYPE;
+    else if (strcmp(buffer, "string") == 0)
+        type = TOKEN_STRING_TYPE;
+    else if (strcmp(buffer, "void") == 0)
+        type = TOKEN_VOID_TYPE;
+
+    return init_token(type, buffer);
 }
 
 /**

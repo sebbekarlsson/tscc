@@ -13,12 +13,16 @@ typedef struct TOKEN_STRUCT {
         TOKEN_COLON,
         TOKEN_SEMI,
         TOKEN_COMMA,
+        TOKEN_STRING_TYPE,
+        TOKEN_INTEGER_TYPE,
+        TOKEN_VOID_TYPE,
         TOKEN_STRING_VALUE,
         TOKEN_INTEGER_VALUE,
         TOKEN_PLUS,
         TOKEN_MINUS,
         TOKEN_DIVIDE,
-        TOKEN_MULTIPLY
+        TOKEN_MULTIPLY,
+        TOKEN_FUNCTION_TYPE
     } type;
 
     char* value;
