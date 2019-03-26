@@ -7,7 +7,8 @@ typedef struct AST_STRUCT {
         AST_INTEGER,
         AST_COMPOUND,
         AST_DATATYPE,
-        AST_FUNCTION_DEFINITION
+        AST_FUNCTION_DEFINITION,
+        AST_VARIABLE_DEFINITION
     } type;
 
     token* token;

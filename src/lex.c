@@ -219,7 +219,11 @@ token* lexer_get_next_token(lexer* l) {
                 lexer_advance(l);
                 return t;
             } break;
-
+            case '=': {
+                token* t = init_token(TOKEN_EQUALS, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
         }
 
         printf("The lexer did not expect `%s` (%d)\n", current_char_str, (int) l->current_char);

@@ -1,5 +1,6 @@
 #include "include/visit.h"
 #include <stdio.h>
+#include <string.h>
 
 
 void visit(AST* node) {
@@ -22,9 +23,9 @@ void visit(AST* node) {
         case AST_FUNCTION_DEFINITION:
             return visit_ast_function_definition((AST_function_definition*) node);
         break;
-        //case VARIABLE_DEFINITION:
-        //    return visit_ast_variable_definition((AST_variable_definition*) node);
-        //break;
+        case AST_VARIABLE_DEFINITION:
+            return visit_ast_variable_definition((AST_variable_definition*) node);
+        break;
     }
 }
 
@@ -46,7 +47,17 @@ void visit_ast_compound(AST_compound* node) {
 }
 
 void visit_ast_datatype(AST_datatype* node) {
-    printf(((AST*)node)->token->value);
+    AST* a = (AST*) node;
+
+    if (strcmp(a->token->value, "number") == 0)
+        printf("int");
+    else if (strcmp(a->token->value, "string") == 0)
+        printf("char*");
+    else
+        printf("void");
+
+    if (node->is_list)
+        printf("*");
 }
 
 void visit_ast_function_definition(AST_function_definition* node) {
@@ -57,6 +68,9 @@ void visit_ast_function_definition(AST_function_definition* node) {
 
     for (int i = 0; i < node->args->size; i++) {
         visit((AST*) node->args->items[i]);
+
+        if (i < node->args->size - 1)
+            printf(", ");
     }
 
     printf(")");
@@ -65,6 +79,8 @@ void visit_ast_function_definition(AST_function_definition* node) {
     printf("\n}");
 }
 
-/*void visit_ast_variable_definition(AST_variable_definition* node) {
-
-}*/
+void visit_ast_variable_definition(AST_variable_definition* node) {
+    visit((AST*) node->datatype);
+    printf(" ");
+    printf(node->name);
+}

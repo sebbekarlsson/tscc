@@ -8,7 +8,7 @@
 #include "ASTInteger.h"
 #include "ASTDatatype.h"
 #include "ASTFunctionDefinition.h"
-//#include "ASTVariableDefinition.h"
+#include "ASTVariableDefinition.h"
 typedef struct PARSER_STRUCT {
     token* current_token;
     lexer* l;
@@ -32,7 +32,7 @@ AST* parser_parse_factor(parser* p);
 
 AST_function_definition* parser_parse_function_definition(parser* p);
 
-AST* parser_parse_variable_definition(parser* p);
+AST_variable_definition* parser_parse_variable_definition(parser* p);
 
 AST_datatype* parser_parse_data_type(parser* p);
 #endif
