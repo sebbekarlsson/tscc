@@ -18,7 +18,22 @@ int main(int argc, char* argv[]) {
 
     visit(tree, opb);
 
-    printf(outputbuffer_get(opb));
+    char* output = outputbuffer_get(opb);
+
+    printf(output);
+    free(output);
+
+    free(contents);
+    free(opb->buffer);
+
+    free(opb->requirements->items);
+    free(opb->requirements);
+    free(opb);
+
+    free(p->current_token);
+    free(p);
+    free(l);
+    free(tree);
 
     return 0;
 }

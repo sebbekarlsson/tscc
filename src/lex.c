@@ -60,7 +60,10 @@ token* lexer_collect_id(lexer* l) {
         current_char_str[0] = l->current_char;
         current_char_str[1] = '\0';
 
+        buffer = realloc(buffer, (strlen(buffer) + 2) * sizeof(char));
+
         strcat(buffer, current_char_str);
+        free(current_char_str);
 
         lexer_advance(l);
     }
@@ -103,7 +106,10 @@ token* lexer_collect_string(lexer* l) {
         current_char_str[0] = l->current_char;
         current_char_str[1] = '\0';
 
+        buffer = realloc(buffer, (strlen(buffer) + 2) * sizeof(char));
+
         strcat(buffer, current_char_str);
+        free(current_char_str);
 
         lexer_advance(l);
     }
