@@ -5,5 +5,7 @@ function main(argc: number, argv: string[]):void {
         print("yes\n");
     } else if (3) {
         print("no\n");
-    }
+    };
+
+    let name:string = "hello";
 }

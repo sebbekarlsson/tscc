@@ -4,6 +4,7 @@
 #include "include/lex.h"
 #include "include/parse.h"
 #include "include/visit.h"
+#include "include/outputbuffer.h"
 
 
 int main(int argc, char* argv[]) {
@@ -12,7 +13,12 @@ int main(int argc, char* argv[]) {
     parser* p = init_parser(l);
 
     AST* tree = (AST*) parser_parse(p);
-    visit(tree);
+    
+    outputbuffer* opb = init_outputbuffer();
+
+    visit(tree, opb);
+
+    printf(outputbuffer_get(opb));
 
     return 0;
 }

@@ -9,3 +9,4 @@
 - [x] Function calls
 - [x] If
 - [x] Else
+- [x] Automatically detect requirements and inject #include tags
