@@ -11,8 +11,8 @@ const char* CLASS_TEMPLATE =
 "\n"
 "\n"
 "@CLASS_NAME* init_@CLASS_NAME() {\n"
-    "@CLASS_NAME* self = calloc(1, sizeof(struct STRUCT_@CLASS_NAME));\n"
-    "return self;\n"
+"    @CLASS_NAME* self = calloc(1, sizeof(struct STRUCT_@CLASS_NAME));\n"
+"    return self;\n"
 "}";
 
 /**
@@ -174,4 +174,6 @@ void visit_ast_class(AST_class* node, outputbuffer* opb) {
     strcpy(buffer, CLASS_TEMPLATE);
 
     buff(opb, str_replace(buffer, "@CLASS_NAME", node->name));
+
+    free(buffer);
 }
