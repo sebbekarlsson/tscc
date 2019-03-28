@@ -61,6 +61,9 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_UNDEFINED:
             return visit_ast_undefined((AST_undefined*) node, opb);
         break;
+        case AST_OBJECT_INIT:
+            return visit_ast_object_init((AST_object_init*) node, opb);
+        break;
     }
 }
 
@@ -105,7 +108,12 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
 }
 
 void visit_ast_function_definition(AST_function_definition* node, outputbuffer* opb) {
-    visit((AST*)node->datatype, opb);
+    if (node->datatype) {
+        visit((AST*)node->datatype, opb);
+    } else {
+        buff(opb, "void");
+    }
+
     buff(opb, " ");
     buff(opb, node->name);
     buff(opb, "(");
@@ -124,7 +132,17 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
 }
 
 void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* opb) {
-    visit((AST*) node->datatype, opb);
+    if (node->value) {
+        if (node->value->type == AST_OBJECT_INIT) {
+            AST_object_init* oi = (AST_object_init*) node->value;
+            buff(opb, oi->function_call->name);
+            buff(opb, "*");
+        } else {
+            visit((AST*) node->datatype, opb);
+        }
+    } else {
+        visit((AST*) node->datatype, opb);
+    }
     buff(opb, " ");
     buff(opb, node->name);
     
@@ -180,10 +198,21 @@ void visit_ast_class(AST_class* node, outputbuffer* opb) {
     strcpy(buffer, CLASS_TEMPLATE);
 
     buff(opb, str_replace(buffer, "@CLASS_NAME", node->name));
-
     free(buffer);
+
+    for (int i = 0; i < node->function_definitions->size; i++) {
+        AST_function_definition* fd = (AST_function_definition*) node->function_definitions->items[i];
+        strcat(fd->name, node->name);
+
+        visit((AST*) fd, opb);
+    }
 }
 
 void visit_ast_undefined(AST_undefined* node, outputbuffer* opb) {
     // silence
+}
+
+void visit_ast_object_init(AST_object_init* node, outputbuffer* opb) {
+    buff(opb, "constructor");
+    visit((AST*)node->function_call, opb);
 }

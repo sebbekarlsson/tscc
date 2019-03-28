@@ -15,6 +15,7 @@
 #include "ASTNull.h"
 #include "ASTClass.h"
 #include "ASTUndefined.h"
+#include "ASTObjectInit.h"
 
 
 typedef struct PARSER_STRUCT {
@@ -51,4 +52,6 @@ AST_function_call* parser_parse_function_call(parser* p, token* t);
 AST_if* parser_parse_if(parser* p);
 
 AST_class* parser_parse_class(parser* p);
+
+AST_object_init* parser_parse_object_init(parser* p);
 #endif

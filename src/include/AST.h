@@ -14,7 +14,8 @@ typedef struct AST_STRUCT {
         AST_IF,
         AST_NULL,
         AST_UNDEFINED,
-        AST_CLASS
+        AST_CLASS,
+        AST_OBJECT_INIT
     } type;
 
     token* token;

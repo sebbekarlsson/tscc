@@ -14,6 +14,7 @@
 #include "ASTNull.h"
 #include "ASTClass.h"
 #include "ASTUndefined.h"
+#include "ASTObjectInit.h"
 
 void visit(AST* node, outputbuffer* opb);
 
@@ -40,4 +41,6 @@ void visit_ast_null(AST_null* node, outputbuffer* opb);
 void visit_ast_class(AST_class* node, outputbuffer* opb);
 
 void visit_ast_undefined(AST_undefined* node, outputbuffer* opb);
+
+void visit_ast_object_init(AST_object_init* node, outputbuffer* opb);
 #endif
