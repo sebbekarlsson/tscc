@@ -3,6 +3,18 @@
 #include <stdio.h>
 #include <string.h>
 
+
+const char* CLASS_TEMPLATE = 
+"typedef struct STRUCT_@CLASS_NAME{"
+    "@CLASS_DEFINITIONS"
+"}@CLASS_NAME"
+"\n"
+"\n"
+"@CLASS_NAME* init_@CLASS_NAME(@ARGS) {"
+    "@CLASS_NAME* self = calloc(1, sizeof(struct STRUCT_@CLASS_NAME));\n"
+    "return self;"
+"}";
+
 /**
  * Main entry point for visiting
  *
