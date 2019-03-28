@@ -1,4 +1,5 @@
 #include "include/ASTInteger.h"
+#include <stdlib.h>
 
 
 AST_integer* init_ast_integer(token* t) {

@@ -198,7 +198,12 @@ AST* parser_parse_factor(parser* p) {
     if (t->type == TOKEN_STRING_VALUE) {
         parser_eat(p, TOKEN_STRING_VALUE);
         return (AST*) init_ast_string(t);
-    } 
+    }
+
+    if (t->type == TOKEN_NULL_TYPE) {
+        parser_eat(p, TOKEN_NULL_TYPE);
+        return (AST*) init_ast_null(t);
+    }
 
     return parser_parse_expr(p);
 }
@@ -314,6 +319,7 @@ AST_datatype* parser_parse_data_type(parser* p) {
         break;
         case TOKEN_NULL_TYPE:
             parser_eat(p, TOKEN_NULL_TYPE);
+        break;
         default:
             printf("Unexpected data_type %s\n", p->current_token->value);
             exit(1);

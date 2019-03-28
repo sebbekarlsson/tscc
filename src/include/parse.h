@@ -12,6 +12,7 @@
 #include "ASTVariableDefinition.h"
 #include "ASTFunctionCall.h"
 #include "ASTIf.h"
+#include "ASTNull.h"
 typedef struct PARSER_STRUCT {
     token* current_token;
     lexer* l;

@@ -52,6 +52,9 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_IF:
             return visit_ast_if((AST_if*) node, opb);
         break;
+        case AST_NULL:
+            return visit_ast_null((AST_null*) node, opb);
+        break;
     }
 }
 
@@ -155,4 +158,8 @@ void visit_ast_if(AST_if* node, outputbuffer* opb) {
         buff(opb, "else ");
         visit(node->otherwise, opb);
     }
+}
+
+void visit_ast_null(AST_null* node, outputbuffer* opb) {
+    buff(opb, "(void*) 0");
 }
