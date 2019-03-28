@@ -12,7 +12,8 @@ typedef struct AST_STRUCT {
         AST_VARIABLE_DEFINITION,
         AST_FUNCTION_CALL,
         AST_IF,
-        AST_NULL
+        AST_NULL,
+        AST_CLASS
     } type;
 
     token* token;

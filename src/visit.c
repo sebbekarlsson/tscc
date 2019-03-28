@@ -1,18 +1,18 @@
 #include "include/visit.h"
 #include "include/remap.h"
+#include "include/strutils.h"
 #include <stdio.h>
 #include <string.h>
 
 
 const char* CLASS_TEMPLATE = 
-"typedef struct STRUCT_@CLASS_NAME{"
-    "@CLASS_DEFINITIONS"
-"}@CLASS_NAME"
+"typedef struct STRUCT_@CLASS_NAME{\n"
+"}@CLASS_NAME;"
 "\n"
 "\n"
-"@CLASS_NAME* init_@CLASS_NAME(@ARGS) {"
+"@CLASS_NAME* init_@CLASS_NAME() {\n"
     "@CLASS_NAME* self = calloc(1, sizeof(struct STRUCT_@CLASS_NAME));\n"
-    "return self;"
+    "return self;\n"
 "}";
 
 /**
@@ -54,6 +54,9 @@ void visit(AST* node, outputbuffer* opb) {
         break;
         case AST_NULL:
             return visit_ast_null((AST_null*) node, opb);
+        break;
+        case AST_CLASS:
+            return visit_ast_class((AST_class*) node, opb);
         break;
     }
 }
@@ -162,4 +165,13 @@ void visit_ast_if(AST_if* node, outputbuffer* opb) {
 
 void visit_ast_null(AST_null* node, outputbuffer* opb) {
     buff(opb, "(void*) 0");
+}
+
+void visit_ast_class(AST_class* node, outputbuffer* opb) {
+    outputbuffer_require(opb, "<stdlib.h>");
+
+    char* buffer = calloc(strlen(CLASS_TEMPLATE), sizeof(char));
+    strcpy(buffer, CLASS_TEMPLATE);
+
+    buff(opb, str_replace(buffer, "@CLASS_NAME", node->name));
 }

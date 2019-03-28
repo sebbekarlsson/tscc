@@ -13,6 +13,9 @@
 #include "ASTFunctionCall.h"
 #include "ASTIf.h"
 #include "ASTNull.h"
+#include "ASTClass.h"
+
+
 typedef struct PARSER_STRUCT {
     token* current_token;
     lexer* l;
@@ -45,4 +48,6 @@ AST* parser_parse_id(parser* p);
 AST_function_call* parser_parse_function_call(parser* p, token* t);
 
 AST_if* parser_parse_if(parser* p);
+
+AST_class* parser_parse_class(parser* p);
 #endif

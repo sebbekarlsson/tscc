@@ -84,6 +84,8 @@ token* lexer_collect_id(lexer* l) {
         type = TOKEN_IF;
     else if (strcmp(buffer, "else") == 0)
         type = TOKEN_ELSE;
+    else if (strcmp(buffer, "class") == 0)
+        type = TOKEN_CLASS_TYPE;
 
     return init_token(type, buffer);
 }

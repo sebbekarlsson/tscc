@@ -12,6 +12,7 @@
 #include "ASTFunctionCall.h"
 #include "ASTIf.h"
 #include "ASTNull.h"
+#include "ASTClass.h"
 
 void visit(AST* node, outputbuffer* opb);
 
@@ -34,4 +35,6 @@ void visit_ast_function_call(AST_function_call* node, outputbuffer* opb);
 void visit_ast_if(AST_if* node, outputbuffer* opb);
 
 void visit_ast_null(AST_null* node, outputbuffer* opb);
+
+void visit_ast_class(AST_class* node, outputbuffer* opb);
 #endif

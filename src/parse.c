@@ -97,6 +97,10 @@ AST* parser_parse_statement(parser* p) {
         return (AST*) parser_parse_if(p);
     }
 
+    if (p->current_token->type == TOKEN_CLASS_TYPE) {
+        return (AST*) parser_parse_class(p);
+    }
+
     return (void*) 0;
 }
 
@@ -357,4 +361,14 @@ AST_if* parser_parse_if(parser* p) {
     }
 
     return init_ast_if(p->current_token, expr, compound, otherwise);
+}
+
+AST_class* parser_parse_class(parser* p) {
+    parser_eat(p, TOKEN_CLASS_TYPE);
+    char* name = p->current_token->value;
+    parser_eat(p, TOKEN_ID);
+    parser_eat(p, TOKEN_LBRACE);
+    parser_eat(p, TOKEN_RBRACE);
+
+    return init_ast_class(p->current_token, name);
 }

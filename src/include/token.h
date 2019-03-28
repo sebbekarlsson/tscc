@@ -29,7 +29,8 @@ typedef struct TOKEN_STRUCT {
         TOKEN_FUNCTION_TYPE,
         TOKEN_IF,
         TOKEN_ELSE,
-        TOKEN_NULL_TYPE
+        TOKEN_NULL_TYPE,
+        TOKEN_CLASS_TYPE
     } type;
 
     char* value;
