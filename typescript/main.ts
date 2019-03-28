@@ -17,4 +17,6 @@ function main(argc: number, argv: string[]):void {
 
     let boolexpr:number = 1 == 1;
     let otherexpr:number = 1 != 2;
+
+    let x:undefined = undefined;
 }

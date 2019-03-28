@@ -14,6 +14,7 @@
 #include "ASTIf.h"
 #include "ASTNull.h"
 #include "ASTClass.h"
+#include "ASTUndefined.h"
 
 
 typedef struct PARSER_STRUCT {

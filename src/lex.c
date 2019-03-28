@@ -78,6 +78,8 @@ token* lexer_collect_id(lexer* l) {
         type = TOKEN_VOID_TYPE;
     else if (strcmp(buffer, "null") == 0)
         type = TOKEN_NULL_TYPE;
+    else if (strcmp(buffer, "undefined") == 0)
+        type = TOKEN_UNDEFINED_TYPE;
     else if (strcmp(buffer, "let") == 0)
         type = TOKEN_LET;
     else if (strcmp(buffer, "if") == 0)

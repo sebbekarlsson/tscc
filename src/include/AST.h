@@ -13,6 +13,7 @@ typedef struct AST_STRUCT {
         AST_FUNCTION_CALL,
         AST_IF,
         AST_NULL,
+        AST_UNDEFINED,
         AST_CLASS
     } type;
 

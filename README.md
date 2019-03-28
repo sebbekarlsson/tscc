@@ -5,7 +5,7 @@
 > The compiler currently supports:
 
 - [x] Function definitions
-- [x] Data types (string, number, null, void)
+- [x] Data types (string, number, null, void, undefined)
 - [x] Function calls
 - [x] If
 - [x] Else
@@ -13,6 +13,7 @@
 - [x] `==` - comparison
 - [x] `!=` - comparison
 - [x] Null values
+- [x] Undefined values
 
 ## Installation & Usage
 > To install tscc, first simply compile it:

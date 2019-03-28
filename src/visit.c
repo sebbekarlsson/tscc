@@ -58,6 +58,9 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_CLASS:
             return visit_ast_class((AST_class*) node, opb);
         break;
+        case AST_UNDEFINED:
+            return visit_ast_undefined((AST_undefined*) node, opb);
+        break;
     }
 }
 
@@ -92,7 +95,7 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
         buff(opb, "int");
     else if (strcmp(a->token->value, "string") == 0)
         buff(opb, "char*");
-    else if (strcmp(a->token->value, "null") == 0)
+    else if (strcmp(a->token->value, "null") == 0 || strcmp(a->token->value, "undefined") == 0)
         buff(opb, "void*");
     else
         buff(opb, "void");
@@ -126,6 +129,9 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
     buff(opb, node->name);
     
     if (node->value) {
+        if (node->value->type == AST_UNDEFINED)
+            return;
+
         buff(opb, " = ");
         visit(node->value, opb);
     }
@@ -176,4 +182,8 @@ void visit_ast_class(AST_class* node, outputbuffer* opb) {
     buff(opb, str_replace(buffer, "@CLASS_NAME", node->name));
 
     free(buffer);
+}
+
+void visit_ast_undefined(AST_undefined* node, outputbuffer* opb) {
+    // silence
 }
