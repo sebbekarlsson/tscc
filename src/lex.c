@@ -234,13 +234,17 @@ token* lexer_get_next_token(lexer* l) {
             case '=': {
                 int token_type = TOKEN_EQUALS;
                 lexer_advance(l);
-                if (l->current_char == '=')
+                if (l->current_char == '=') {
                     token_type = TOKEN_EQUALS_EQUALS;
 
 
-                token* t = init_token(token_type, "==");
-                lexer_advance(l);
-                return t;
+                    token* t = init_token(token_type, "==");
+                    lexer_advance(l);
+                    return t;
+                } else {
+                    token* t = init_token(token_type, current_char_str);
+                    return t; 
+                }
             } break;
             case '!': {
                 lexer_advance(l);
