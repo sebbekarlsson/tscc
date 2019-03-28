@@ -15,6 +15,7 @@ typedef struct TOKEN_STRUCT {
         TOKEN_COMMA,
         TOKEN_LET,
         TOKEN_EQUALS,
+        TOKEN_EQUALS_EQUALS,
         TOKEN_STRING_TYPE,
         TOKEN_INTEGER_TYPE,
         TOKEN_VOID_TYPE,

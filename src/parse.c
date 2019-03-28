@@ -112,11 +112,18 @@ AST* parser_parse_expr(parser* p) {
 
     token* t = (void*) 0;
 
-    while (p->current_token->type == TOKEN_PLUS) {
+    while (
+        p->current_token->type == TOKEN_PLUS ||
+        p->current_token->type == TOKEN_EQUALS_EQUALS
+    ) {
         t = p->current_token;
 
         if (p->current_token->type == TOKEN_PLUS) {
             parser_eat(p, TOKEN_PLUS);
+        }
+
+        else if (p->current_token->type == TOKEN_EQUALS_EQUALS) {
+            parser_eat(p, TOKEN_EQUALS_EQUALS);
         }
 
         node = (AST*) init_ast_binop(t, node, parser_parse_term(p));

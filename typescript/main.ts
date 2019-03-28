@@ -8,4 +8,6 @@ function main(argc: number, argv: string[]):void {
     };
 
     let name:string = "hello";
+
+    let boolexpr:number = 1 == 1;
 }
