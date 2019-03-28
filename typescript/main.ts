@@ -10,4 +10,5 @@ function main(argc: number, argv: string[]):void {
     let name:string = "hello";
 
     let boolexpr:number = 1 == 1;
+    let otherexpr:number = 1 != 2;
 }

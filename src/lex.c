@@ -242,6 +242,15 @@ token* lexer_get_next_token(lexer* l) {
                 lexer_advance(l);
                 return t;
             } break;
+            case '!': {
+                lexer_advance(l);
+                if (l->current_char == '=') {
+                    token*t = init_token(TOKEN_NOT_EQUALS, "!=");
+                    lexer_advance(l);
+                    return t;
+                }
+                lexer_advance(l);
+            } break;
         }
 
         printf("The lexer did not expect `%s` (%d)\n", current_char_str, (int) l->current_char);

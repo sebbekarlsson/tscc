@@ -11,3 +11,4 @@
 - [x] Else
 - [x] Automatically detect requirements and inject #include tags
 - [x] `==` - comparison
+- [x] `!=` - comparison
