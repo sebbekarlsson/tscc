@@ -1,4 +1,5 @@
 function main(argc: number, argv: string[]):void {
+    let xml:null = 0;
     let mynumber:number = 1 + 2;
 
     if (0) {

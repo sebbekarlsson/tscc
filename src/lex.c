@@ -76,6 +76,8 @@ token* lexer_collect_id(lexer* l) {
         type = TOKEN_STRING_TYPE;
     else if (strcmp(buffer, "void") == 0)
         type = TOKEN_VOID_TYPE;
+    else if (strcmp(buffer, "null") == 0)
+        type = TOKEN_NULL_TYPE;
     else if (strcmp(buffer, "let") == 0)
         type = TOKEN_LET;
     else if (strcmp(buffer, "if") == 0)
@@ -236,8 +238,6 @@ token* lexer_get_next_token(lexer* l) {
                 lexer_advance(l);
                 if (l->current_char == '=') {
                     token_type = TOKEN_EQUALS_EQUALS;
-
-
                     token* t = init_token(token_type, "==");
                     lexer_advance(l);
                     return t;

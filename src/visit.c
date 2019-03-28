@@ -86,6 +86,8 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
         buff(opb, "int");
     else if (strcmp(a->token->value, "string") == 0)
         buff(opb, "char*");
+    else if (strcmp(a->token->value, "null") == 0)
+        buff(opb, "void*");
     else
         buff(opb, "void");
 

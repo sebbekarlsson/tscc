@@ -28,7 +28,8 @@ typedef struct TOKEN_STRUCT {
         TOKEN_MULTIPLY,
         TOKEN_FUNCTION_TYPE,
         TOKEN_IF,
-        TOKEN_ELSE
+        TOKEN_ELSE,
+        TOKEN_NULL_TYPE
     } type;
 
     char* value;

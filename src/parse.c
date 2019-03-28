@@ -312,8 +312,11 @@ AST_datatype* parser_parse_data_type(parser* p) {
         case TOKEN_VOID_TYPE:
             parser_eat(p, TOKEN_VOID_TYPE);
         break;
+        case TOKEN_NULL_TYPE:
+            parser_eat(p, TOKEN_NULL_TYPE);
         default:
             printf("Unexpected data_type %s\n", p->current_token->value);
+            exit(1);
         break;
     }
 
