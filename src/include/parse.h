@@ -3,6 +3,7 @@
 #include "token.h"
 #include "lex.h"
 #include "AST.h"
+#include "scope.h"
 #include "ASTCompound.h"
 #include "ASTBinop.h"
 #include "ASTInteger.h"
@@ -27,31 +28,31 @@ parser* init_parser(lexer* l);
 
 void parser_eat(parser* p, int token_type);
 
-AST_compound* parser_parse(parser* p);
+AST_compound* parser_parse(parser* p, scope* s);
 
-AST_compound* parser_parse_compound(parser* p);
+AST_compound* parser_parse_compound(parser* p, scope* s);
 
-AST* parser_parse_statement(parser* p);
+AST* parser_parse_statement(parser* p, scope* s);
 
-AST* parser_parse_expr(parser* p);
+AST* parser_parse_expr(parser* p, scope* s);
 
-AST* parser_parse_term(parser* p);
+AST* parser_parse_term(parser* p, scope* s);
 
-AST* parser_parse_factor(parser* p);
+AST* parser_parse_factor(parser* p, scope* s);
 
-AST_function_definition* parser_parse_function_definition(parser* p);
+AST_function_definition* parser_parse_function_definition(parser* p, scope* s);
 
-AST_variable_definition* parser_parse_variable_definition(parser* p);
+AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s);
 
-AST_datatype* parser_parse_data_type(parser* p);
+AST_datatype* parser_parse_data_type(parser* p, scope* s);
 
-AST* parser_parse_id(parser* p);
+AST* parser_parse_id(parser* p, scope* s);
 
-AST_function_call* parser_parse_function_call(parser* p, token* t);
+AST_function_call* parser_parse_function_call(parser* p, scope* s, token* t);
 
-AST_if* parser_parse_if(parser* p);
+AST_if* parser_parse_if(parser* p, scope* s);
 
-AST_class* parser_parse_class(parser* p);
+AST_class* parser_parse_class(parser* p, scope* s);
 
-AST_object_init* parser_parse_object_init(parser* p);
+AST_object_init* parser_parse_object_init(parser* p, scope* s);
 #endif

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "include/scope.h"
 #include "include/token.h"
 #include "include/io.h"
 #include "include/lex.h"
@@ -7,12 +8,18 @@
 #include "include/outputbuffer.h"
 
 
+scope* GLOBAL_SCOPE;
+
+
 int main(int argc, char* argv[]) {
     char* contents = read_file(argv[1]);
+
+    GLOBAL_SCOPE = init_scope((void*) 0);
+
     lexer* l = init_lexer(contents);
     parser* p = init_parser(l);
 
-    AST* tree = (AST*) parser_parse(p);
+    AST* tree = (AST*) parser_parse(p, GLOBAL_SCOPE);
     
     outputbuffer* opb = init_outputbuffer();
 

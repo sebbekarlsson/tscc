@@ -1,6 +1,7 @@
 #include "include/visit.h"
 #include "include/remap.h"
 #include "include/strutils.h"
+#include "include/scope.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -108,10 +109,27 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
 }
 
 void visit_ast_function_definition(AST_function_definition* node, outputbuffer* opb) {
-    if (node->datatype) {
-        visit((AST*)node->datatype, opb);
-    } else {
-        buff(opb, "void");
+    AST* a = (AST*) node;
+    int using_class_type = 0;
+    
+    if (a->s) {
+        scope* s = (scope*) a->s;
+        if (s->owner) {
+            if (s->owner->type == AST_CLASS) {
+                AST_class* c = (AST_class*) s->owner;
+                buff(opb, c->name);
+                buff(opb, "*");
+                using_class_type = 1;
+            }
+        }
+    }
+
+    if (!using_class_type) {
+        if (node->datatype) {
+            visit((AST*)node->datatype, opb);
+        } else {
+            buff(opb, "void");
+        }
     }
 
     buff(opb, " ");

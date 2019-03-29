@@ -1,6 +1,7 @@
 #ifndef TSCC_AST_H
 #define TSCC_AST_H
 #include "token.h"
+
 typedef struct AST_STRUCT {
     enum {
         AST_BINOP,
@@ -19,6 +20,7 @@ typedef struct AST_STRUCT {
     } type;
 
     token* token;
+    struct scope* s;
 } AST;
 
 void AST_constructor(AST* ast, token* t, int type);

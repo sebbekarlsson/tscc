@@ -42,8 +42,8 @@ void parser_eat(parser* p, int token_type) {
  *
  * @return AST_compound*
  */
-AST_compound* parser_parse(parser* p) {
-    return parser_parse_compound(p);
+AST_compound* parser_parse(parser* p, scope* s) {
+    return parser_parse_compound(p, s);
 }
 
 /**
@@ -53,16 +53,16 @@ AST_compound* parser_parse(parser* p) {
  *
  * @return AST_compound*
  */
-AST_compound* parser_parse_compound(parser* p) {
+AST_compound* parser_parse_compound(parser* p, scope* s) {
     dynamic_list* children = init_dynamic_list(sizeof(AST*));
 
-    AST* statement = parser_parse_statement(p);
+    AST* statement = parser_parse_statement(p, s);
     dynamic_list_append(children, statement);
 
     while (p->current_token->type == TOKEN_SEMI) {
         parser_eat(p, TOKEN_SEMI);
 
-        statement = parser_parse_statement(p);
+        statement = parser_parse_statement(p, s);
         dynamic_list_append(children, statement);
     }
 
@@ -76,29 +76,29 @@ AST_compound* parser_parse_compound(parser* p) {
  *
  * @return AST*
  */
-AST* parser_parse_statement(parser* p) {
+AST* parser_parse_statement(parser* p, scope* s) {
     if (
         p->current_token->type == TOKEN_ID ||
         p->current_token->type == TOKEN_INTEGER_VALUE ||
         p->current_token->type == TOKEN_STRING_VALUE
     ) {
-        return parser_parse_expr(p);
+        return parser_parse_expr(p, s);
     }
 
     if (p->current_token->type == TOKEN_FUNCTION_TYPE)
-        return (AST*) parser_parse_function_definition(p);
+        return (AST*) parser_parse_function_definition(p, s);
 
     if (p->current_token->type == TOKEN_LET) {
         parser_eat(p, TOKEN_LET);
-        return (AST*) parser_parse_variable_definition(p);
+        return (AST*) parser_parse_variable_definition(p, s);
     }
 
     if (p->current_token->type == TOKEN_IF) {
-        return (AST*) parser_parse_if(p);
+        return (AST*) parser_parse_if(p, s);
     }
 
     if (p->current_token->type == TOKEN_CLASS_TYPE) {
-        return (AST*) parser_parse_class(p);
+        return (AST*) parser_parse_class(p, s);
     }
 
     return (void*) 0;
@@ -111,8 +111,8 @@ AST* parser_parse_statement(parser* p) {
  *
  * @return AST*
  */
-AST* parser_parse_expr(parser* p) {
-    AST* node = parser_parse_term(p);
+AST* parser_parse_expr(parser* p, scope* s) {
+    AST* node = parser_parse_term(p, s);
 
     token* t = (void*) 0;
 
@@ -135,7 +135,7 @@ AST* parser_parse_expr(parser* p) {
             parser_eat(p, TOKEN_NOT_EQUALS);
         }
 
-        node = (AST*) init_ast_binop(t, node, parser_parse_term(p));
+        node = (AST*) init_ast_binop(t, node, parser_parse_term(p, s));
     }
 
     return node;
@@ -148,8 +148,8 @@ AST* parser_parse_expr(parser* p) {
  *
  * @return AST*
  */
-AST* parser_parse_term(parser* p) {
-    AST* node = parser_parse_factor(p);
+AST* parser_parse_term(parser* p, scope* s) {
+    AST* node = parser_parse_factor(p, s);
 
     token* t = (void*) 0;
 
@@ -162,7 +162,7 @@ AST* parser_parse_term(parser* p) {
             parser_eat(p, TOKEN_MULTIPLY);
         }
 
-        node = (AST*) init_ast_binop(t, node, parser_parse_factor(p));
+        node = (AST*) init_ast_binop(t, node, parser_parse_factor(p, s));
     }
 
     return node;
@@ -175,7 +175,7 @@ AST* parser_parse_term(parser* p) {
  *
  * @return AST*
  */
-AST* parser_parse_factor(parser* p) {
+AST* parser_parse_factor(parser* p, scope* s) {
     token* t = p->current_token;
 
     if (t->type == TOKEN_INTEGER_VALUE) {
@@ -185,18 +185,18 @@ AST* parser_parse_factor(parser* p) {
 
     if (t->type == TOKEN_LPAREN) {
         parser_eat(p, TOKEN_LPAREN);
-        AST* expr = parser_parse_expr(p);
+        AST* expr = parser_parse_expr(p, s);
         parser_eat(p, TOKEN_RPAREN);
 
         return expr;
     }
 
     if (t->type == TOKEN_FUNCTION_TYPE) {
-        return (AST*) parser_parse_function_definition(p);
+        return (AST*) parser_parse_function_definition(p, s);
     }
 
     if (t->type == TOKEN_ID) {
-        return parser_parse_id(p);
+        return parser_parse_id(p, s);
     }
 
     if (t->type == TOKEN_STRING_VALUE) {
@@ -215,35 +215,35 @@ AST* parser_parse_factor(parser* p) {
     }
 
     if (t->type == TOKEN_NEW) {
-        return (AST*) parser_parse_object_init(p);
+        return (AST*) parser_parse_object_init(p, s);
     }
 
-    return parser_parse_expr(p);
+    return parser_parse_expr(p, s);
 }
 
-AST* parser_parse_id(parser* p) {
+AST* parser_parse_id(parser* p, scope* s) {
     token* t = p->current_token;
     parser_eat(p, TOKEN_ID);
 
     if (p->current_token->type == TOKEN_LPAREN)
-        return (AST*) parser_parse_function_call(p, t);
+        return (AST*) parser_parse_function_call(p, s, t);
 
     return (void*) 0;
 }
 
-AST_function_call* parser_parse_function_call(parser* p, token* t) {
+AST_function_call* parser_parse_function_call(parser* p, scope* s, token* t) {
     char* name = t->value;
     dynamic_list* args = init_dynamic_list(sizeof(struct AST_STRUCT));
     parser_eat(p, TOKEN_LPAREN);
     AST* expr = (void*) 0;
 
     if (p->current_token->type != TOKEN_RPAREN) {
-        expr = parser_parse_expr(p);
+        expr = parser_parse_expr(p, s);
         dynamic_list_append(args, expr);
         
         while (p->current_token->type == TOKEN_COMMA) {
             parser_eat(p, TOKEN_COMMA);
-            expr = parser_parse_expr(p); 
+            expr = parser_parse_expr(p, s); 
             dynamic_list_append(args, expr);
         }
     }
@@ -260,7 +260,7 @@ AST_function_call* parser_parse_function_call(parser* p, token* t) {
  *
  * @return AST_function_definition*
  */
-AST_function_definition* parser_parse_function_definition(parser* p) {
+AST_function_definition* parser_parse_function_definition(parser* p, scope* s) {
     parser_eat(p, TOKEN_FUNCTION_TYPE);
     dynamic_list* args = init_dynamic_list(sizeof(struct AST_VARIABLE_DEFINITION_STRUCT));
     char* name = p->current_token->value;
@@ -268,12 +268,12 @@ AST_function_definition* parser_parse_function_definition(parser* p) {
     parser_eat(p, TOKEN_LPAREN);
 
     if (p->current_token->type == TOKEN_ID) {
-        AST_variable_definition* definition = parser_parse_variable_definition(p);
+        AST_variable_definition* definition = parser_parse_variable_definition(p, s);
         dynamic_list_append(args, definition);
 
         while (p->current_token->type == TOKEN_COMMA) {
             parser_eat(p, TOKEN_COMMA);
-            definition = parser_parse_variable_definition(p); 
+            definition = parser_parse_variable_definition(p, s); 
             dynamic_list_append(args, definition);
         }
     }
@@ -284,14 +284,17 @@ AST_function_definition* parser_parse_function_definition(parser* p) {
 
     if (p->current_token->type == TOKEN_COLON) {
         parser_eat(p, TOKEN_COLON);
-        datatype = parser_parse_data_type(p);
+        datatype = parser_parse_data_type(p, s);
     }
 
     parser_eat(p, TOKEN_LBRACE);
-    AST_compound* compound = parser_parse_compound(p);
+    AST_compound* compound = parser_parse_compound(p, s);
     parser_eat(p, TOKEN_RBRACE);
 
-    return init_ast_function_definition(p->current_token, name, args, compound, datatype);
+    AST_function_definition* fd = init_ast_function_definition(p->current_token, name, args, compound, datatype);
+    ((AST*) fd)->s = (struct scope*) s;
+
+    return fd;
 }
 
 /**
@@ -301,17 +304,17 @@ AST_function_definition* parser_parse_function_definition(parser* p) {
  *
  * @return AST_variable_definition*
  */
-AST_variable_definition* parser_parse_variable_definition(parser* p) {
+AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s) {
     char* name = p->current_token->value;
     AST* value = (void*) 0;
     parser_eat(p, TOKEN_ID);
     parser_eat(p, TOKEN_COLON);
 
-    AST_datatype* datatype = parser_parse_data_type(p);
+    AST_datatype* datatype = parser_parse_data_type(p, s);
 
     if (p->current_token->type == TOKEN_EQUALS) {
         parser_eat(p, TOKEN_EQUALS);
-        value = parser_parse_expr(p);
+        value = parser_parse_expr(p, s);
     }
 
     return init_ast_variable_definition(p->current_token, name, value, datatype);
@@ -324,7 +327,7 @@ AST_variable_definition* parser_parse_variable_definition(parser* p) {
  *
  * @return AST_datatype*
  */
-AST_datatype* parser_parse_data_type(parser* p) {
+AST_datatype* parser_parse_data_type(parser* p, scope* s) {
     token* t = p->current_token;
 
     int is_list = 0;
@@ -361,30 +364,34 @@ AST_datatype* parser_parse_data_type(parser* p) {
     return init_ast_datatype(t, is_list);
 }
 
-AST_if* parser_parse_if(parser* p) {
+AST_if* parser_parse_if(parser* p, scope* s) {
     AST* expr = (void*) 0;
     AST_if* otherwise = (void*) 0;
 
     if (p->current_token->type == TOKEN_IF) {
         parser_eat(p, TOKEN_IF);
         parser_eat(p, TOKEN_LPAREN);
-        expr = parser_parse_expr(p);
+        expr = parser_parse_expr(p, s);
         parser_eat(p, TOKEN_RPAREN);
     }
 
     parser_eat(p, TOKEN_LBRACE);
-    AST_compound* compound = parser_parse_compound(p);
+    AST_compound* compound = parser_parse_compound(p, s);
     parser_eat(p, TOKEN_RBRACE);
 
     if (p->current_token->type == TOKEN_ELSE) {
         parser_eat(p, TOKEN_ELSE);
-        otherwise = parser_parse_if(p);
+        otherwise = parser_parse_if(p, s);
     }
 
     return init_ast_if(p->current_token, expr, compound, otherwise);
 }
 
-AST_class* parser_parse_class(parser* p) {
+AST_class* parser_parse_class(parser* p, scope* s) {
+    AST_class* class_ptr = (void*) 0;
+
+    scope* class_scope = init_scope((AST*) &class_ptr);
+
     parser_eat(p, TOKEN_CLASS_TYPE);
     char* name = p->current_token->value;
     parser_eat(p, TOKEN_ID);
@@ -393,27 +400,30 @@ AST_class* parser_parse_class(parser* p) {
     dynamic_list* function_definitions = init_dynamic_list(sizeof(struct AST_FUNCTION_DEFINITION_STRUCT));
     
     if (p->current_token->type == TOKEN_FUNCTION_TYPE) {
-        dynamic_list_append(function_definitions, parser_parse_function_definition(p));
+        dynamic_list_append(function_definitions, parser_parse_function_definition(p, class_scope));
     }
 
     while (p->current_token->type == TOKEN_SEMI) {
         parser_eat(p, TOKEN_SEMI);
 
         if (p->current_token->type == TOKEN_FUNCTION_TYPE) {
-            dynamic_list_append(function_definitions, parser_parse_function_definition(p));
+            dynamic_list_append(function_definitions, parser_parse_function_definition(p, class_scope));
         }
     }
 
     parser_eat(p, TOKEN_RBRACE);
 
-    return init_ast_class(p->current_token, name, (void*)0, function_definitions);
+    class_ptr = init_ast_class(p->current_token, name, (void*)0, function_definitions);
+    class_scope->owner = (AST*) class_ptr;
+
+    return class_ptr;
 }
 
-AST_object_init* parser_parse_object_init(parser* p) {
+AST_object_init* parser_parse_object_init(parser* p, scope* s) {
     parser_eat(p, TOKEN_NEW);
     token* t = p->current_token;
     parser_eat(p, TOKEN_ID);
-    AST_function_call* fc = parser_parse_function_call(p, t);
+    AST_function_call* fc = parser_parse_function_call(p, s, t);
 
     return init_ast_object_init(p->current_token, fc);
 }
