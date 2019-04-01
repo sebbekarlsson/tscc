@@ -17,7 +17,8 @@
 #include "ASTClass.h"
 #include "ASTUndefined.h"
 #include "ASTObjectInit.h"
-
+#include "ASTVariable.h"
+#include "ASTAttributeAccess.h"
 
 typedef struct PARSER_STRUCT {
     token* current_token;

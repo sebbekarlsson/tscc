@@ -191,6 +191,11 @@ token* lexer_get_next_token(lexer* l) {
                 lexer_advance(l);
                 return t;
             } break;
+            case '.': {
+                token* t = init_token(TOKEN_DOT, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
             case '[': {
                 token* t = init_token(TOKEN_LBRACKET, current_char_str);
                 lexer_advance(l);

@@ -5,6 +5,7 @@
 typedef struct AST_STRUCT {
     enum {
         AST_BINOP,
+        AST_VARIABLE,
         AST_INTEGER,
         AST_STRING,
         AST_COMPOUND,
@@ -16,7 +17,8 @@ typedef struct AST_STRUCT {
         AST_NULL,
         AST_UNDEFINED,
         AST_CLASS,
-        AST_OBJECT_INIT
+        AST_OBJECT_INIT,
+        AST_ATTRIBUTE_ACCESS
     } type;
 
     token* token;

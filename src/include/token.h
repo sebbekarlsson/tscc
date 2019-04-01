@@ -13,6 +13,7 @@ typedef struct TOKEN_STRUCT {
         TOKEN_COLON,
         TOKEN_SEMI,
         TOKEN_COMMA,
+        TOKEN_DOT,
         TOKEN_LET,
         TOKEN_EQUALS,
         TOKEN_EQUALS_EQUALS,

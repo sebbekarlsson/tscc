@@ -120,7 +120,8 @@ AST* parser_parse_expr(parser* p, scope* s) {
     while (
         p->current_token->type == TOKEN_PLUS ||
         p->current_token->type == TOKEN_EQUALS_EQUALS ||
-        p->current_token->type == TOKEN_NOT_EQUALS
+        p->current_token->type == TOKEN_NOT_EQUALS ||
+        p->current_token->type == TOKEN_DOT
     ) {
         t = p->current_token;
 
@@ -197,7 +198,17 @@ AST* parser_parse_factor(parser* p, scope* s) {
     }
 
     if (t->type == TOKEN_ID) {
-        return parser_parse_id(p, s);
+         AST* left = parser_parse_id(p, s);
+
+         if (p->current_token->type == TOKEN_DOT) {
+            parser_eat(p, TOKEN_DOT);
+
+            AST* right = parser_parse_expr(p, s);
+
+            return (AST*) init_ast_attribute_access(t, left, right);
+         }
+
+         return (AST*) left;
     }
 
     if (t->type == TOKEN_STRING_VALUE) {
@@ -229,7 +240,7 @@ AST* parser_parse_id(parser* p, scope* s) {
     if (p->current_token->type == TOKEN_LPAREN)
         return (AST*) parser_parse_function_call(p, s, t);
 
-    return (void*) 0;
+    return (AST*) init_ast_variable(t);
 }
 
 AST_function_call* parser_parse_function_call(parser* p, scope* s, token* t) {

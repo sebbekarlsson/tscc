@@ -110,21 +110,20 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
 
 void visit_ast_function_definition(AST_function_definition* node, outputbuffer* opb) {
     AST* a = (AST*) node;
-    int using_class_type = 0;
+    AST_class* owner_class = (void*) 0;
     
     if (a->s) {
         scope* s = (scope*) a->s;
         if (s->owner) {
             if (s->owner->type == AST_CLASS) {
-                AST_class* c = (AST_class*) s->owner;
-                buff(opb, c->name);
+                owner_class = (AST_class*) s->owner;
+                buff(opb, owner_class->name);
                 buff(opb, "*");
-                using_class_type = 1;
             }
         }
     }
 
-    if (!using_class_type) {
+    if (!owner_class) {
         if (node->datatype) {
             visit((AST*)node->datatype, opb);
         } else {
@@ -145,7 +144,16 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
 
     buff(opb, ")");
     buff(opb, "{\n");
+    
+    if (owner_class) {
+        buff(opb, owner_class->name);
+        buff(opb, "* self = init_");
+        buff(opb, owner_class->name);
+        buff(opb, "()");
+    }
+
     visit((AST*)node->compound, opb);
+    buff(opb, "return self;\n");
     buff(opb, "}");
 }
 
