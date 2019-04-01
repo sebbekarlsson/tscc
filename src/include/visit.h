@@ -15,6 +15,9 @@
 #include "ASTClass.h"
 #include "ASTUndefined.h"
 #include "ASTObjectInit.h"
+#include "ASTAttributeAccess.h"
+#include "ASTVariable.h"
+#include "ASTAssignment.h"
 
 void visit(AST* node, outputbuffer* opb);
 
@@ -43,4 +46,10 @@ void visit_ast_class(AST_class* node, outputbuffer* opb);
 void visit_ast_undefined(AST_undefined* node, outputbuffer* opb);
 
 void visit_ast_object_init(AST_object_init* node, outputbuffer* opb);
+
+void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb);
+
+void visit_ast_variable(AST_variable* node, outputbuffer* opb);
+
+void visit_ast_assignment(AST_assignment* node, outputbuffer* opb);
 #endif

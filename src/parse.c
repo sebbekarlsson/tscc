@@ -121,7 +121,7 @@ AST* parser_parse_expr(parser* p, scope* s) {
         p->current_token->type == TOKEN_PLUS ||
         p->current_token->type == TOKEN_EQUALS_EQUALS ||
         p->current_token->type == TOKEN_NOT_EQUALS ||
-        p->current_token->type == TOKEN_DOT
+        p->current_token->type == TOKEN_EQUALS
     ) {
         t = p->current_token;
 
@@ -135,6 +135,12 @@ AST* parser_parse_expr(parser* p, scope* s) {
 
         else if (p->current_token->type == TOKEN_NOT_EQUALS) {
             parser_eat(p, TOKEN_NOT_EQUALS);
+        }
+
+        else if (p->current_token->type == TOKEN_EQUALS) {
+            parser_eat(p, TOKEN_EQUALS);
+            AST* x = (AST*) init_ast_assignment(t, node, parser_parse_expr(p, s));
+            return x;
         }
 
         node = (AST*) init_ast_binop(t, node, parser_parse_term(p, s));
@@ -329,19 +335,22 @@ AST_function_definition* parser_parse_function_definition(parser* p, scope* s) {
  * @return AST_variable_definition*
  */
 AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s) {
-    char* name = p->current_token->value;
+    AST* left = parser_parse_expr(p, s);
     AST* value = (void*) 0;
-    parser_eat(p, TOKEN_ID);
-    parser_eat(p, TOKEN_COLON);
+    AST_datatype* datatype = (void*) 0;
 
-    AST_datatype* datatype = parser_parse_data_type(p, s);
+    if (p->current_token->type == TOKEN_COLON) {
+        parser_eat(p, TOKEN_COLON);
+
+        datatype = parser_parse_data_type(p, s);
+    }
 
     if (p->current_token->type == TOKEN_EQUALS) {
         parser_eat(p, TOKEN_EQUALS);
         value = parser_parse_expr(p, s);
     }
 
-    return init_ast_variable_definition(p->current_token, name, value, datatype);
+    return init_ast_variable_definition(p->current_token, left, value, datatype);
 }
 
 /**

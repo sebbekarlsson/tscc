@@ -18,7 +18,8 @@ typedef struct AST_STRUCT {
         AST_UNDEFINED,
         AST_CLASS,
         AST_OBJECT_INIT,
-        AST_ATTRIBUTE_ACCESS
+        AST_ATTRIBUTE_ACCESS,
+        AST_ASSIGNMENT
     } type;
 
     token* token;

@@ -65,6 +65,15 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_OBJECT_INIT:
             return visit_ast_object_init((AST_object_init*) node, opb);
         break;
+        case AST_ATTRIBUTE_ACCESS:
+            return visit_ast_attribute_access((AST_attribute_access*) node, opb);
+        break;
+        case AST_VARIABLE:
+            return visit_ast_variable((AST_variable*) node, opb);
+        break;
+        case AST_ASSIGNMENT:
+            return visit_ast_assignment((AST_assignment*) node, opb);
+        break;
     }
 }
 
@@ -149,11 +158,14 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
         buff(opb, owner_class->name);
         buff(opb, "* self = init_");
         buff(opb, owner_class->name);
-        buff(opb, "()");
+        buff(opb, "();\n");
     }
 
     visit((AST*)node->compound, opb);
-    buff(opb, "return self;\n");
+
+    if (owner_class)
+        buff(opb, "return self;\n");
+
     buff(opb, "}");
 }
 
@@ -170,7 +182,7 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
         visit((AST*) node->datatype, opb);
     }
     buff(opb, " ");
-    buff(opb, node->name);
+    visit(node->left, opb);
     
     if (node->value) {
         if (node->value->type == AST_UNDEFINED)
@@ -241,4 +253,25 @@ void visit_ast_undefined(AST_undefined* node, outputbuffer* opb) {
 void visit_ast_object_init(AST_object_init* node, outputbuffer* opb) {
     buff(opb, "constructor");
     visit((AST*)node->function_call, opb);
+}
+
+void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb) {
+    visit(node->left, opb);
+    buff(opb, "->");
+    visit(node->right, opb);
+}
+
+void visit_ast_variable(AST_variable* node, outputbuffer* opb) {
+    AST* a = (AST*) node;
+
+    if (strcmp(a->token->value, "this") == 0)
+        buff(opb, "self");
+    else
+        buff(opb, ((AST*)node)->token->value);
+}
+
+void visit_ast_assignment(AST_assignment* node, outputbuffer* opb) {
+    visit(node->left, opb);
+    buff(opb, " = ");
+    visit(node->right, opb);
 }

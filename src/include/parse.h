@@ -19,6 +19,7 @@
 #include "ASTObjectInit.h"
 #include "ASTVariable.h"
 #include "ASTAttributeAccess.h"
+#include "ASTAssignment.h"
 
 typedef struct PARSER_STRUCT {
     token* current_token;

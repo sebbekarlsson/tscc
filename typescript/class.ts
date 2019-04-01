@@ -1,10 +1,9 @@
 class Person {
     function constructor(name: string) {
-        this.name = name;    
+        this.name = "hello";
     };
 };
 
 
-function main(argc: number, argv: string[]):void {
-    let p:void = new Person();
+function main(argc: number, argv: string[]):number {
 };

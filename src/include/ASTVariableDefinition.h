@@ -5,10 +5,10 @@
 
 typedef struct AST_VARIABLE_DEFINITION_STRUCT {
     AST base;
-    char* name;
+    AST* left;
     AST* value;
     AST_datatype* datatype;
 } AST_variable_definition;
 
-AST_variable_definition* init_ast_variable_definition(token* t, char* name, AST* value, AST_datatype* datatype);
+AST_variable_definition* init_ast_variable_definition(token* t, AST* left, AST* value, AST_datatype* datatype);
 #endif
