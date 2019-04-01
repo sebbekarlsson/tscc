@@ -14,6 +14,8 @@
 - [x] `!=` - comparison
 - [x] Null values
 - [x] Undefined values
+- [x] Classes with methods
+- [x] Classes with member variables
 
 ## Installation & Usage
 > To install tscc, first simply compile it:
