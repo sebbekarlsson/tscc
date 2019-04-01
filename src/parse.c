@@ -139,8 +139,7 @@ AST* parser_parse_expr(parser* p, scope* s) {
 
         else if (p->current_token->type == TOKEN_EQUALS) {
             parser_eat(p, TOKEN_EQUALS);
-            AST* x = (AST*) init_ast_assignment(t, node, parser_parse_expr(p, s));
-            return x;
+            return (AST*) init_ast_assignment(t, node, parser_parse_expr(p, s));
         }
 
         node = (AST*) init_ast_binop(t, node, parser_parse_term(p, s));
