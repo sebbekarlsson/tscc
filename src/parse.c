@@ -2,6 +2,7 @@
 #include "include/dynamic_list.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 /**
@@ -293,6 +294,18 @@ AST_function_definition* parser_parse_function_definition(parser* p, scope* s) {
 
     AST_function_definition* fd = init_ast_function_definition(p->current_token, name, args, compound, datatype);
     ((AST*) fd)->s = (struct scope*) s;
+
+    // if the owner is a class and the parsed function definition name is
+    // "constructor", then set the pointer on the class definition.
+    if (s->owner) {
+        if (s->owner->type == AST_CLASS) {
+            AST_class* class_parent = (AST_class*) s->owner;
+
+            if (strcmp(name, "constructor")) {
+                class_parent->constructor_function_definition = fd;
+            }
+        }
+    }
 
     return fd;
 }
