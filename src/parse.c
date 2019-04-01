@@ -435,17 +435,25 @@ AST_class* parser_parse_class(parser* p, scope* s) {
         dynamic_list_append(function_definitions, parser_parse_function_definition(p, class_scope));
     }
 
+    if (p->current_token->type == TOKEN_ID) {
+        dynamic_list_append(variable_definitions, parser_parse_variable_definition(p, class_scope));  
+    }
+
     while (p->current_token->type == TOKEN_SEMI) {
         parser_eat(p, TOKEN_SEMI);
 
         if (p->current_token->type == TOKEN_FUNCTION_TYPE) {
             dynamic_list_append(function_definitions, parser_parse_function_definition(p, class_scope));
         }
+
+        if (p->current_token->type == TOKEN_ID) {
+            dynamic_list_append(variable_definitions, parser_parse_variable_definition(p, class_scope));  
+        }
     }
 
     parser_eat(p, TOKEN_RBRACE);
 
-    class_ptr = init_ast_class(p->current_token, name, (void*)0, function_definitions);
+    class_ptr = init_ast_class(p->current_token, name, variable_definitions, function_definitions);
     class_scope->owner = (AST*) class_ptr;
 
     return class_ptr;

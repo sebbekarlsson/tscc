@@ -6,16 +6,6 @@
 #include <string.h>
 
 
-const char* CLASS_TEMPLATE = 
-"typedef struct STRUCT_@CLASS_NAME{\n"
-"}@CLASS_NAME;"
-"\n"
-"\n"
-"@CLASS_NAME* init_@CLASS_NAME() {\n"
-"    @CLASS_NAME* self = calloc(1, sizeof(struct STRUCT_@CLASS_NAME));\n"
-"    return self;\n"
-"}";
-
 /**
  * Main entry point for visiting
  *
@@ -78,11 +68,11 @@ void visit(AST* node, outputbuffer* opb) {
 }
 
 void visit_ast_binop(AST_binop* node, outputbuffer* opb) {
-    buff(opb, "(");
+    //buff(opb, "(");
     visit(node->left, opb);
     buff(opb, ((AST*)node)->token->value);
     visit(node->right, opb);
-    buff(opb, ")");
+    //buff(opb, ")");
 }
 
 void visit_ast_integer(AST_integer* node, outputbuffer* opb) {
@@ -120,19 +110,20 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
 void visit_ast_function_definition(AST_function_definition* node, outputbuffer* opb) {
     AST* a = (AST*) node;
     AST_class* owner_class = (void*) 0;
-    
+   
     if (a->s) {
         scope* s = (scope*) a->s;
         if (s->owner) {
             if (s->owner->type == AST_CLASS) {
                 owner_class = (AST_class*) s->owner;
-                buff(opb, owner_class->name);
-                buff(opb, "*");
             }
         }
     }
 
-    if (!owner_class) {
+    if (owner_class && strcmp(node->name, "constructor") == 0) {
+       buff(opb, owner_class->name);
+       buff(opb, "*"); 
+    } else {
         if (node->datatype) {
             visit((AST*)node->datatype, opb);
         } else {
@@ -142,7 +133,19 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
 
     buff(opb, " ");
     buff(opb, node->name);
+
+    if (owner_class)
+        buff(opb, owner_class->name);
+
     buff(opb, "(");
+
+    if (owner_class && strcmp(node->name, "constructor") != 0) {
+        buff(opb, owner_class->name);
+        buff(opb, "* self");
+
+        if (node->args->size >= 1)
+            buff(opb, ", ");
+    }
 
     for (int i = 0; i < node->args->size; i++) {
         visit((AST*) node->args->items[i], opb);
@@ -154,7 +157,7 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
     buff(opb, ")");
     buff(opb, "{\n");
     
-    if (owner_class) {
+    if (owner_class && strcmp(node->name, "constructor") == 0) {
         buff(opb, owner_class->name);
         buff(opb, "* self = init_");
         buff(opb, owner_class->name);
@@ -163,7 +166,7 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
 
     visit((AST*)node->compound, opb);
 
-    if (owner_class)
+    if (owner_class && strcmp(node->name, "constructor") == 0)
         buff(opb, "return self;\n");
 
     buff(opb, "}");
@@ -232,18 +235,77 @@ void visit_ast_null(AST_null* node, outputbuffer* opb) {
 void visit_ast_class(AST_class* node, outputbuffer* opb) {
     outputbuffer_require(opb, "<stdlib.h>");
 
-    char* buffer = calloc(strlen(CLASS_TEMPLATE), sizeof(char));
-    strcpy(buffer, CLASS_TEMPLATE);
-
-    buff(opb, str_replace(buffer, "@CLASS_NAME", node->name));
-    free(buffer);
+    buff(opb, "typedef struct STRUCT_");
+    buff(opb, node->name);
+    buff(opb, "{");
+    
+    for (int i = 0; i < node->variable_definitions->size; i++) {
+        AST_variable_definition* vd = (AST_variable_definition*) node->variable_definitions->items[i];
+        visit((AST*) vd, opb); buff(opb, ";");
+    }
 
     for (int i = 0; i < node->function_definitions->size; i++) {
         AST_function_definition* fd = (AST_function_definition*) node->function_definitions->items[i];
-        strcat(fd->name, node->name);
+        
+        if (strcmp(fd->name, "constructor") == 0) {
+            buff(opb, "struct STRUCT_");
+           buff(opb, node->name);
+        } else {
+            visit((AST*)fd->datatype, opb);
+        }
+        buff(opb, "* (*");
+        buff(opb, fd->name);
+        buff(opb, ")(");
+        
+        for (int j = 0; j < fd->args->size; j++) {
+            visit((AST*)fd->args->items[i], opb);
+
+            if (i < fd->args->size - 1)
+                buff(opb, ", ");
+        }
+
+        buff(opb, ");\n");
+    }
+
+    buff(opb, "}");
+    buff(opb, node->name);
+    buff(opb, ";");
+    buff(opb, "\n");
+    buff(opb, node->name);
+    buff(opb, "* init_");
+    buff(opb, node->name);
+    buff(opb, "();\n");
+    buff(opb, "\n");
+    
+    for (int i = 0; i < node->function_definitions->size; i++) {
+        AST_function_definition* fd = (AST_function_definition*) node->function_definitions->items[i];
 
         visit((AST*) fd, opb);
     }
+
+    buff(opb, "\n");
+    buff(opb, "\n");
+    buff(opb, node->name);
+    buff(opb, "* init_");
+    buff(opb, node->name);
+    buff(opb, "() {\n");
+    buff(opb, node->name);
+    buff(opb, "* self = calloc(1, sizeof(struct STRUCT_");
+    buff(opb, node->name);
+    buff(opb, "));\n");
+    
+    for (int i = 0; i < node->function_definitions->size; i++) {
+        AST_function_definition* fd = (AST_function_definition*) node->function_definitions->items[i];
+        buff(opb, "self->");
+        buff(opb, fd->name);
+        buff(opb, " = ");
+        buff(opb, fd->name);
+        buff(opb, node->name);
+        buff(opb, ";");
+    }
+
+    buff(opb, "return self;\n");
+    buff(opb, "}"); 
 }
 
 void visit_ast_undefined(AST_undefined* node, outputbuffer* opb) {
