@@ -10,5 +10,7 @@ AST_class* init_ast_class(token* t, char* name, dynamic_list* variable_definitio
     c->variable_definitions = variable_definitions;
     c->function_definitions = function_definitions;
 
+    c->constructor_function_definition = (void*) 0;
+
     return c;
 }
