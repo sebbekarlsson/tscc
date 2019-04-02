@@ -7,6 +7,7 @@ AST_function_call* init_ast_function_call(token* t, char* name, dynamic_list* ar
 
     fc->name = name;
     fc->args = args;
+    fc->self = (void*) 0;
 
     return fc;
 }

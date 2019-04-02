@@ -203,6 +203,13 @@ void visit_ast_function_call(AST_function_call* node, outputbuffer* opb) {
     buff(opb, remap_function(node->name, opb));
     buff(opb, "(");
 
+    if (node->self) {
+        visit(node->self, opb);
+
+        if (node->args->size)
+            buff(opb, ",");
+    }
+
     for (int i = 0; i < node->args->size; i++) {
         visit((AST*) node->args->items[i], opb);
 
@@ -259,6 +266,13 @@ void visit_ast_class(AST_class* node, outputbuffer* opb) {
         buff(opb, "* (*");
         buff(opb, fd->name);
         buff(opb, ")(");
+
+        buff(opb, "struct STRUCT_");
+        buff(opb, node->name);
+        buff(opb, "* self");
+
+        if (fd->args->size)
+            buff(opb, ", ");
         
         for (int j = 0; j < fd->args->size; j++) {
             visit((AST*)fd->args->items[i], opb);
@@ -323,6 +337,10 @@ void visit_ast_object_init(AST_object_init* node, outputbuffer* opb) {
 void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb) {
     visit(node->left, opb);
     buff(opb, "->");
+    if (node->right->type == AST_FUNCTION_CALL) {
+        AST_function_call* fc = (AST_function_call*) node->right;
+        fc->self = (AST*) init_ast_variable(init_token(TOKEN_ID, node->left->token->value));
+    }
     visit(node->right, opb);
 }
 

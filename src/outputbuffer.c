@@ -4,10 +4,10 @@
 
 const char* BOOTSTRAP_SRC =
 "typedef struct CONSOLE_STRUCT {\n"
-"    void* (*log)(char* inp);\n"
+"    void* (*log)(void* self, char* inp);\n"
 "} console_t;"
 "\n"
-"void console_log(char* inp) {\n"
+"void console_log(console_t* console, char* inp) {\n"
     "printf(inp);"
 "}"
 "\n"

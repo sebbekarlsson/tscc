@@ -8,6 +8,7 @@ typedef struct AST_FUNCTION_CALL_STRUCT {
     AST base;
     char* name;
     dynamic_list* args;
+    AST* self;
 } AST_function_call;
 
 AST_function_call* init_ast_function_call(token* t,char* name, dynamic_list* args);
