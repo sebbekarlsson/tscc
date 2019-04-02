@@ -31,3 +31,42 @@
 ```bash
     tscc <filename>.ts
 ```
+
+## Known issues
+### String concatenation
+> String concatenation does not work:
+```typescript
+    let name:string = "john " + "doe";
+```
+
+### Array initialization
+> Array initialization does not work:
+```typescript
+    let mylist:string[] = ["john", "doe"];
+```
+
+### For loops
+> For loops does not work:
+```typescript
+    let someArray = [1, "string", false];
+
+    for (let entry of someArray) {
+        console.log(entry); // 1, "string", false
+    }
+```
+
+### While loops
+> While loops does not work:
+```typescript
+    while(condition) { 
+       // statements if the condition is true 
+    }
+```
+
+### Comments
+> Comments does not work:
+```typescript
+    // this is a comment
+
+    /* this is also a comment */
+```
