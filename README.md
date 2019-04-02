@@ -16,6 +16,7 @@
 - [x] Undefined values
 - [x] Classes with methods
 - [x] Classes with member variables
+- [x] console.log
 
 ## Installation & Usage
 > To install tscc, first simply compile it:
