@@ -251,6 +251,16 @@ token* lexer_get_next_token(lexer* l) {
                 lexer_advance(l);
                 return t;
             } break;
+            case '<': {
+                token* t = init_token(TOKEN_LESS_THAN, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
+            case '>': {
+                token* t = init_token(TOKEN_LARGER_THAN, current_char_str);
+                lexer_advance(l);
+                return t;
+            } break;
             case '=': {
                 int token_type = TOKEN_EQUALS;
                 lexer_advance(l);

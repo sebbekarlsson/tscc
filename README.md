@@ -13,6 +13,8 @@
 - [x] Automatically detect requirements and inject #include tags
 - [x] `==` - comparison
 - [x] `!=` - comparison
+- [x] `<` - comparison
+- [x] `>` - comparison
 - [x] Null values
 - [x] Undefined values
 - [x] Classes with methods

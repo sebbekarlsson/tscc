@@ -18,6 +18,8 @@ typedef struct TOKEN_STRUCT {
         TOKEN_EQUALS,
         TOKEN_EQUALS_EQUALS,
         TOKEN_NOT_EQUALS,
+        TOKEN_LARGER_THAN,
+        TOKEN_LESS_THAN,
         TOKEN_STRING_TYPE,
         TOKEN_INTEGER_TYPE,
         TOKEN_VOID_TYPE,

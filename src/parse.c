@@ -129,7 +129,9 @@ AST* parser_parse_expr(parser* p, scope* s) {
         p->current_token->type == TOKEN_PLUS ||
         p->current_token->type == TOKEN_EQUALS_EQUALS ||
         p->current_token->type == TOKEN_NOT_EQUALS ||
-        p->current_token->type == TOKEN_EQUALS
+        p->current_token->type == TOKEN_EQUALS ||
+        p->current_token->type == TOKEN_LESS_THAN ||
+        p->current_token->type == TOKEN_LARGER_THAN
     ) {
         t = p->current_token;
 
@@ -143,6 +145,14 @@ AST* parser_parse_expr(parser* p, scope* s) {
 
         else if (p->current_token->type == TOKEN_NOT_EQUALS) {
             parser_eat(p, TOKEN_NOT_EQUALS);
+        }
+
+        else if (p->current_token->type == TOKEN_LESS_THAN) {
+            parser_eat(p, TOKEN_LESS_THAN);
+        }
+
+        else if (p->current_token->type == TOKEN_LARGER_THAN) {
+            parser_eat(p, TOKEN_LARGER_THAN);
         }
 
         else if (p->current_token->type == TOKEN_EQUALS) {
