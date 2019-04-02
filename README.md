@@ -62,6 +62,12 @@
     /* this is also a comment */
 ```
 
+### Floating point numbers
+> Floating point numbers does not work:
+```typescript
+    let age:number = 33.5;
+```
+
 ### Too many semi colons
 > The output basically looks like this right now:
 ```c
