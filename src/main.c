@@ -10,7 +10,6 @@
 
 scope* GLOBAL_SCOPE;
 
-
 int main(int argc, char* argv[]) {
     char* contents = read_file(argv[1]);
 
@@ -28,6 +27,11 @@ int main(int argc, char* argv[]) {
     char* output = outputbuffer_get(opb);
 
     printf(output);
+
+    /**
+     * TODO: make this memory cleaning below prettier
+     */
+
     free(output);
 
     free(contents);

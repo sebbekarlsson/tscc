@@ -40,6 +40,7 @@ void parser_eat(parser* p, int token_type) {
  * Main entry point for the parser
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST_compound*
  */
@@ -51,6 +52,7 @@ AST_compound* parser_parse(parser* p, scope* s) {
  * Parses a compound
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST_compound*
  */
@@ -74,6 +76,7 @@ AST_compound* parser_parse_compound(parser* p, scope* s) {
  * Parses a statement
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST*
  */
@@ -113,6 +116,7 @@ AST* parser_parse_statement(parser* p, scope* s) {
  * Parses an expression
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST*
  */
@@ -156,6 +160,7 @@ AST* parser_parse_expr(parser* p, scope* s) {
  * Parses division, multiplication
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST*
  */
@@ -183,6 +188,7 @@ AST* parser_parse_term(parser* p, scope* s) {
  * Parses factorial, integers, numbers, functions, objects etc. (values?)
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST*
  */
@@ -252,6 +258,15 @@ AST* parser_parse_id(parser* p, scope* s) {
     return (AST*) init_ast_variable(t);
 }
 
+/**
+ * Parses a function call
+ *
+ * @param parser* p
+ * @param scope* s
+ * @param token* t
+ *
+ * @return AST_function_call*
+ */
 AST_function_call* parser_parse_function_call(parser* p, scope* s, token* t) {
     char* name = t->value;
     dynamic_list* args = init_dynamic_list(sizeof(struct AST_STRUCT));
@@ -278,6 +293,7 @@ AST_function_call* parser_parse_function_call(parser* p, scope* s, token* t) {
  * Parses a function definition
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST_function_definition*
  */
@@ -334,6 +350,7 @@ AST_function_definition* parser_parse_function_definition(parser* p, scope* s) {
  * Parses a variable definition
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST_variable_definition*
  */
@@ -360,6 +377,7 @@ AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s) {
  * Parses a datatype
  *
  * @param parser* p
+ * @param scope* s
  *
  * @return AST_datatype*
  */
@@ -400,6 +418,14 @@ AST_datatype* parser_parse_data_type(parser* p, scope* s) {
     return init_ast_datatype(t, is_list);
 }
 
+/**
+ * Parses an if-else statement
+ *
+ * @param parser* p
+ * @param scope* s
+ *
+ * @return AST_if*
+ */
 AST_if* parser_parse_if(parser* p, scope* s) {
     AST* expr = (void*) 0;
     AST_if* otherwise = (void*) 0;
@@ -423,6 +449,12 @@ AST_if* parser_parse_if(parser* p, scope* s) {
     return init_ast_if(p->current_token, expr, compound, otherwise);
 }
 
+/**
+ * Parses a class
+ *
+ * @param parser* p
+ * @param scope* s
+ */
 AST_class* parser_parse_class(parser* p, scope* s) {
     AST_class* class_ptr = (void*) 0;
 
@@ -463,6 +495,14 @@ AST_class* parser_parse_class(parser* p, scope* s) {
     return class_ptr;
 }
 
+/**
+ * Parses an object initialization
+ *
+ * @param parser* p
+ * @param scope* s
+ *
+ * @return AST_object_init*
+ */
 AST_object_init* parser_parse_object_init(parser* p, scope* s) {
     parser_eat(p, TOKEN_NEW);
     token* t = p->current_token;
@@ -472,6 +512,14 @@ AST_object_init* parser_parse_object_init(parser* p, scope* s) {
     return init_ast_object_init(p->current_token, fc);
 }
 
+/**
+ * Parses a while statement
+ *
+ * @param parser* p
+ * @param scope* s
+ *
+ * @return AST_while*
+ */
 AST_while* parser_parse_while(parser* p, scope* s) {
     parser_eat(p, TOKEN_WHILE);
     parser_eat(p, TOKEN_LPAREN);

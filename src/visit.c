@@ -70,6 +70,12 @@ void visit(AST* node, outputbuffer* opb) {
     }
 }
 
+/**
+ * Visitor for AST_binop node
+ *
+ * @param AST_binop* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_binop(AST_binop* node, outputbuffer* opb) {
     //buff(opb, "(");
     visit(node->left, opb);
@@ -78,22 +84,46 @@ void visit_ast_binop(AST_binop* node, outputbuffer* opb) {
     //buff(opb, ")");
 }
 
+/**
+ * Visitor for AST_integer node
+ *
+ * @param AST_integer* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_integer(AST_integer* node, outputbuffer* opb) {
     buff(opb, ((AST*)node)->token->value);
 }
 
+/**
+ * Visitor for AST_string node
+ *
+ * @param AST_string* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_string(AST_string* node, outputbuffer* opb) {
     buff(opb, "\"");
     buff(opb, ((AST*)node)->token->value);
     buff(opb, "\"");
 }
 
+/**
+ * Visitor for AST_compound node
+ *
+ * @param AST_compound* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_compound(AST_compound* node, outputbuffer* opb) {
     for (int i = 0; i < node->children->size; i++) {
         visit((AST*) node->children->items[i], opb); buff(opb, ";\n");
     }
 }
 
+/**
+ * Visitor for AST_datatype node
+ *
+ * @param AST_datatype* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
     AST* a = (AST*) node;
 
@@ -110,6 +140,12 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
         buff(opb, "*");
 }
 
+/**
+ * Visitor for AST_function_definition node
+ *
+ * @param AST_function_definition* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_function_definition(AST_function_definition* node, outputbuffer* opb) {
     AST* a = (AST*) node;
     AST_class* owner_class = (void*) 0;
@@ -178,6 +214,12 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
     buff(opb, "}");
 }
 
+/**
+ * Visitor for AST_variable_definition node
+ *
+ * @param AST_variable_definition* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* opb) {
     if (node->value) {
         if (node->value->type == AST_OBJECT_INIT) {
@@ -202,6 +244,12 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
     }
 }
 
+/**
+ * Visitor for AST_function_call node
+ *
+ * @param AST_function_call* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_function_call(AST_function_call* node, outputbuffer* opb) {
     buff(opb, remap_function(node->name, opb));
     buff(opb, "(");
@@ -223,6 +271,12 @@ void visit_ast_function_call(AST_function_call* node, outputbuffer* opb) {
     buff(opb, ")");
 }
 
+/**
+ * Visitor for AST_if node
+ *
+ * @param AST_if* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_if(AST_if* node, outputbuffer* opb) {
     if (node->expr) {
         buff(opb, "if");
@@ -241,10 +295,22 @@ void visit_ast_if(AST_if* node, outputbuffer* opb) {
     }
 }
 
+/**
+ * Visitor for AST_null node
+ *
+ * @param AST_null* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_null(AST_null* node, outputbuffer* opb) {
     buff(opb, "(void*) 0");
 }
 
+/**
+ * Visitor for AST_class node
+ *
+ * @param AST_class* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_class(AST_class* node, outputbuffer* opb) {
     outputbuffer_require(opb, "<stdlib.h>");
 
@@ -328,15 +394,33 @@ void visit_ast_class(AST_class* node, outputbuffer* opb) {
     buff(opb, "}"); 
 }
 
+/**
+ * Visitor for AST_undefined node
+ *
+ * @param AST_undefined* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_undefined(AST_undefined* node, outputbuffer* opb) {
     // silence
 }
 
+/**
+ * Visitor for AST_object_init node
+ *
+ * @param AST_object_init* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_object_init(AST_object_init* node, outputbuffer* opb) {
     buff(opb, "constructor");
     visit((AST*)node->function_call, opb);
 }
 
+/**
+ * Visitor for AST_attribute_access node
+ *
+ * @param AST_attribute_access* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb) {
     visit(node->left, opb);
     buff(opb, "->");
@@ -347,6 +431,12 @@ void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb) {
     visit(node->right, opb);
 }
 
+/**
+ * Visitor for AST_variable node
+ *
+ * @param AST_variable* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_variable(AST_variable* node, outputbuffer* opb) {
     AST* a = (AST*) node;
 
@@ -357,12 +447,24 @@ void visit_ast_variable(AST_variable* node, outputbuffer* opb) {
     }
 }
 
+/**
+ * Visitor for AST_assignment node
+ *
+ * @param AST_assignment* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_assignment(AST_assignment* node, outputbuffer* opb) {
     visit(node->left, opb);
     buff(opb, " = ");
     visit(node->right, opb);
 }
 
+/**
+ * Visitor for AST_while node
+ * 
+ * @param AST_while* node
+ * @param outputbuffer* opb
+ */
 void visit_ast_while(AST_while* node, outputbuffer* opb) {
     buff(opb, "while (");
     visit((AST*) node->expr, opb);

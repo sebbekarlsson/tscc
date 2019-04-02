@@ -129,6 +129,11 @@ token* lexer_collect_string(lexer* l) {
     return init_token(TOKEN_STRING_VALUE, buffer); 
 }
 
+/**
+ * Collects an integer
+ *
+ * @return token*
+ */
 token* lexer_collect_integer(lexer* l) {
     char* buffer = calloc(2, sizeof(char));
 
