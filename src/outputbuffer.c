@@ -2,13 +2,34 @@
 #include <string.h>
 #include <stdio.h>
 
+const char* BOOTSTRAP_SRC =
+"typedef struct CONSOLE_STRUCT {\n"
+"    void* (*log)(char* inp);\n"
+"} console_t;"
+"\n"
+"void console_log(char* inp) {\n"
+    "printf(inp);"
+"}"
+"\n"
+"console_t* init_console() {\n"
+"    console_t* console = calloc(1, sizeof(struct CONSOLE_STRUCT));\n"
+"    console->log = console_log;\n"
+"    return console;\n"
+"}\n"
+"\n"
+"console_t* console;"
+"\n"
+"\n"
+"void bootstrap() {\n"
+"    console = init_console();"
+"}\n";
+
 
 outputbuffer* init_outputbuffer() {
     outputbuffer* opb = calloc(1, sizeof(struct OUTPUTBUFFER_STRUCT));
     opb->buffer = calloc(2, sizeof(char));
     opb->buffer[0] = '\0';
     opb->requirements = init_dynamic_list(sizeof(char*));
-
     return opb;
 }
 
@@ -42,6 +63,9 @@ char* outputbuffer_get(outputbuffer* opb) {
         strcat(output, incl);
         free(incl);
     }
+
+    output = realloc(output, (strlen(output) + 2 + strlen(BOOTSTRAP_SRC) * sizeof(char)));
+    strcat(output, BOOTSTRAP_SRC);
     
     output = realloc(output, (strlen(output) + 2 + strlen(opb->buffer)) * sizeof(char));
     strcat(output, opb->buffer);

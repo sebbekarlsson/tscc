@@ -156,6 +156,9 @@ void visit_ast_function_definition(AST_function_definition* node, outputbuffer* 
 
     buff(opb, ")");
     buff(opb, "{\n");
+
+    if (strcmp(node->name, "main") == 0)
+        buff(opb, "bootstrap();\n\n");
     
     if (owner_class && strcmp(node->name, "constructor") == 0) {
         buff(opb, owner_class->name);
@@ -326,10 +329,11 @@ void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb) {
 void visit_ast_variable(AST_variable* node, outputbuffer* opb) {
     AST* a = (AST*) node;
 
-    if (strcmp(a->token->value, "this") == 0)
+    if (strcmp(a->token->value, "this") == 0) {
         buff(opb, "self");
-    else
+    } else {
         buff(opb, ((AST*)node)->token->value);
+    }
 }
 
 void visit_ast_assignment(AST_assignment* node, outputbuffer* opb) {

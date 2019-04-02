@@ -29,4 +29,5 @@ function main(argc: number, argv: string[]):number {
     person.becomeOlder();
     person.becomeOlder();
     person.sayName();
+    console.log("hello");
 };
