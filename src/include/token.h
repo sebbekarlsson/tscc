@@ -33,7 +33,8 @@ typedef struct TOKEN_STRUCT {
         TOKEN_NULL_TYPE,
         TOKEN_UNDEFINED_TYPE,
         TOKEN_CLASS_TYPE,
-        TOKEN_NEW
+        TOKEN_NEW,
+        TOKEN_WHILE
     } type;
 
     char* value;

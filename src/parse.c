@@ -102,6 +102,10 @@ AST* parser_parse_statement(parser* p, scope* s) {
         return (AST*) parser_parse_class(p, s);
     }
 
+    if (p->current_token->type == TOKEN_WHILE) {
+        return (AST*) parser_parse_while(p, s);
+    }
+
     return (void*) 0;
 }
 
@@ -466,4 +470,16 @@ AST_object_init* parser_parse_object_init(parser* p, scope* s) {
     AST_function_call* fc = parser_parse_function_call(p, s, t);
 
     return init_ast_object_init(p->current_token, fc);
+}
+
+AST_while* parser_parse_while(parser* p, scope* s) {
+    parser_eat(p, TOKEN_WHILE);
+    parser_eat(p, TOKEN_LPAREN);
+    AST* expr = parser_parse_expr(p, s);
+    parser_eat(p, TOKEN_RPAREN);
+    parser_eat(p, TOKEN_LBRACE);
+    AST_compound* compound = parser_parse_compound(p, s);
+    parser_eat(p, TOKEN_RBRACE);
+
+    return init_ast_while(p->current_token, expr, compound);
 }

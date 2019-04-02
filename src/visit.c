@@ -64,6 +64,9 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_ASSIGNMENT:
             return visit_ast_assignment((AST_assignment*) node, opb);
         break;
+        case AST_WHILE:
+            return visit_ast_while((AST_while*) node, opb);
+        break;
     }
 }
 
@@ -358,4 +361,12 @@ void visit_ast_assignment(AST_assignment* node, outputbuffer* opb) {
     visit(node->left, opb);
     buff(opb, " = ");
     visit(node->right, opb);
+}
+
+void visit_ast_while(AST_while* node, outputbuffer* opb) {
+    buff(opb, "while (");
+    visit((AST*) node->expr, opb);
+    buff(opb, ") {\n");
+    visit((AST*) node->compound, opb);
+    buff(opb, "\n}");
 }

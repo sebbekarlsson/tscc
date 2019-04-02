@@ -9,6 +9,7 @@
 - [x] Function calls
 - [x] If
 - [x] Else
+- [X] While loops
 - [x] Automatically detect requirements and inject #include tags
 - [x] `==` - comparison
 - [x] `!=` - comparison
@@ -50,14 +51,6 @@
 ```typescript
     for (let entry of someArray) {
         console.log(entry); // 1, "string", false
-    }
-```
-
-### While loops
-> While loops does not work:
-```typescript
-    while(condition) { 
-       // statements if the condition is true 
     }
 ```
 

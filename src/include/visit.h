@@ -18,6 +18,7 @@
 #include "ASTAttributeAccess.h"
 #include "ASTVariable.h"
 #include "ASTAssignment.h"
+#include "ASTWhile.h"
 
 void visit(AST* node, outputbuffer* opb);
 
@@ -52,4 +53,6 @@ void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb);
 void visit_ast_variable(AST_variable* node, outputbuffer* opb);
 
 void visit_ast_assignment(AST_assignment* node, outputbuffer* opb);
+
+void visit_ast_while(AST_while* node, outputbuffer* opb);
 #endif
