@@ -97,3 +97,8 @@
 ### Solutions
 > If you find any solution for any of these issues, feel free to create a
 > `pull-request`... Also if you find any other issues, please _report them_.
+
+## Notes
+### Machine code
+> The compiler does _not_ turn the typescript input to machine code, you should
+> use a C compiler to do that. I would suggest using `gcc`.
