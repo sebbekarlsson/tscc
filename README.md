@@ -71,7 +71,7 @@
 ```
 > Becomes this when compiled (`int`):
 ```c
-    int age = 33.5;
+    int age = 33.5f;
 ```
 
 ### Interfaces
