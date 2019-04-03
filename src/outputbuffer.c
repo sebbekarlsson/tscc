@@ -20,6 +20,11 @@ const char* BOOTSTRAP_SRC =
 "console_t* console;"
 "\n"
 "\n"
+"char charAt(char* value, int index) {\n"
+"    return value[index];"
+"}"
+"\n"
+"\n"
 "void bootstrap() {\n"
 "    console = init_console();"
 "}\n";

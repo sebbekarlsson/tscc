@@ -436,12 +436,23 @@ void visit_ast_object_init(AST_object_init* node, outputbuffer* opb) {
  * @param outputbuffer* opb
  */
 void visit_ast_attribute_access(AST_attribute_access* node, outputbuffer* opb) {
-    visit(node->left, opb);
-    buff(opb, "->");
+    AST_function_call* fc = (void*) 0;
+    int use_left = 1;
+
     if (node->right->type == AST_FUNCTION_CALL) {
-        AST_function_call* fc = (AST_function_call*) node->right;
+        fc = (AST_function_call*) node->right;
+        
         fc->self = (AST*) init_ast_variable(init_token(TOKEN_ID, node->left->token->value));
+        
+        if (strcmp(fc->name, "charAt") == 0)
+            use_left = 0;
     }
+
+    if (use_left) {
+        visit(node->left, opb);
+        buff(opb, "->");
+    }
+
     visit(node->right, opb);
 }
 
