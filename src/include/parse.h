@@ -22,6 +22,7 @@
 #include "ASTAttributeAccess.h"
 #include "ASTAssignment.h"
 #include "ASTWhile.h"
+#include "ASTArray.h"
 
 typedef struct PARSER_STRUCT {
     token* current_token;
@@ -61,4 +62,6 @@ AST_class* parser_parse_class(parser* p, scope* s);
 AST_object_init* parser_parse_object_init(parser* p, scope* s);
 
 AST_while* parser_parse_while(parser* p, scope* s);
+
+AST_array* parser_parse_array(parser* p, scope* s);
 #endif

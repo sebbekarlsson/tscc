@@ -260,6 +260,10 @@ AST* parser_parse_factor(parser* p, scope* s) {
         return (AST*) parser_parse_object_init(p, s);
     }
 
+    if (t->type == TOKEN_LBRACKET) {
+        return (AST*) parser_parse_array(p, s);
+    }
+
     return parser_parse_expr(p, s);
 }
 
@@ -545,4 +549,23 @@ AST_while* parser_parse_while(parser* p, scope* s) {
     parser_eat(p, TOKEN_RBRACE);
 
     return init_ast_while(p->current_token, expr, compound);
+}
+
+AST_array* parser_parse_array(parser* p, scope* s) {
+    parser_eat(p, TOKEN_LBRACKET);
+    AST_datatype* datatype = (void*) 0;
+    dynamic_list* elements = init_dynamic_list(sizeof(AST*));
+    
+    if (p->current_token->type != TOKEN_RBRACKET) {
+        dynamic_list_append(elements, parser_parse_expr(p, s));
+    }
+
+    while (p->current_token->type == TOKEN_COMMA) {
+        parser_eat(p, TOKEN_COMMA);
+        dynamic_list_append(elements, parser_parse_expr(p, s));
+    }
+
+    parser_eat(p, TOKEN_RBRACKET);
+
+    return init_ast_array(p->current_token, datatype, elements);
 }

@@ -21,7 +21,8 @@ typedef struct AST_STRUCT {
         AST_OBJECT_INIT,
         AST_ATTRIBUTE_ACCESS,
         AST_ASSIGNMENT,
-        AST_WHILE
+        AST_WHILE,
+        AST_ARRAY
     } type;
 
     token* token;

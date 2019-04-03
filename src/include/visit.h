@@ -20,6 +20,7 @@
 #include "ASTVariable.h"
 #include "ASTAssignment.h"
 #include "ASTWhile.h"
+#include "ASTArray.h"
 
 void visit(AST* node, outputbuffer* opb);
 
@@ -58,4 +59,6 @@ void visit_ast_variable(AST_variable* node, outputbuffer* opb);
 void visit_ast_assignment(AST_assignment* node, outputbuffer* opb);
 
 void visit_ast_while(AST_while* node, outputbuffer* opb);
+
+void visit_ast_array(AST_array* node, outputbuffer* opb);
 #endif
