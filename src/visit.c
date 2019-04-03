@@ -25,6 +25,9 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_INTEGER:
             return visit_ast_integer((AST_integer*) node, opb);
         break;
+        case AST_FLOAT:
+            return visit_ast_float((AST_float*) node, opb);
+        break;
         case AST_DATATYPE:
             return visit_ast_datatype((AST_datatype*) node, opb);
         break;
@@ -92,6 +95,17 @@ void visit_ast_binop(AST_binop* node, outputbuffer* opb) {
  */
 void visit_ast_integer(AST_integer* node, outputbuffer* opb) {
     buff(opb, ((AST*)node)->token->value);
+}
+
+/**
+ * Visitor for AST_float node
+ *
+ * @param AST_float* node
+ * @param outputbuffer* opb
+ */
+void visit_ast_float(AST_float* node, outputbuffer* opb) {
+    buff(opb, ((AST*)node)->token->value);
+    buff(opb, "f");
 }
 
 /**

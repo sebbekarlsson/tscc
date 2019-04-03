@@ -5,6 +5,7 @@
 #include "ASTCompound.h"
 #include "ASTBinop.h"
 #include "ASTInteger.h"
+#include "ASTFloat.h"
 #include "ASTString.h"
 #include "ASTDatatype.h"
 #include "ASTFunctionDefinition.h"
@@ -25,6 +26,8 @@ void visit(AST* node, outputbuffer* opb);
 void visit_ast_binop(AST_binop* node, outputbuffer* opb);
 
 void visit_ast_integer(AST_integer* node, outputbuffer* opb);
+
+void visit_ast_float(AST_float* node, outputbuffer* opb);
 
 void visit_ast_string(AST_string* node, outputbuffer* opb);
 

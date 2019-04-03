@@ -18,7 +18,7 @@ token* lexer_collect_id(lexer* l);
 
 token* lexer_collect_string(lexer* l);
 
-token* lexer_collect_integer(lexer* l);
+token* lexer_collect_number(lexer* l);
 
 token* lexer_get_next_token(lexer* l);
 #endif

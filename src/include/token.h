@@ -25,6 +25,7 @@ typedef struct TOKEN_STRUCT {
         TOKEN_VOID_TYPE,
         TOKEN_STRING_VALUE,
         TOKEN_INTEGER_VALUE,
+        TOKEN_FLOAT_VALUE,
         TOKEN_PLUS,
         TOKEN_MINUS,
         TOKEN_DIVIDE,
