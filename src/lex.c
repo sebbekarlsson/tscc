@@ -130,20 +130,24 @@ token* lexer_collect_string(lexer* l) {
 }
 
 /**
- * Collects an integer
+ * Collects a number
  *
  * @return token*
  */
-token* lexer_collect_integer(lexer* l) {
+token* lexer_collect_number(lexer* l) {
     char* buffer = calloc(2, sizeof(char));
+
+    int type = TOKEN_INTEGER_VALUE;
 
     buffer[0] = l->current_char;
     buffer[1] = '\0';
+    
+    char* current_char_str = calloc(1, sizeof(char));
+    current_char_str[0] = '\0';
 
     lexer_advance(l);
 
     while (isdigit(l->current_char)) {
-        char* current_char_str = calloc(2, sizeof(char));
         current_char_str[0] = l->current_char;
         current_char_str[1] = '\0';
 
@@ -152,7 +156,29 @@ token* lexer_collect_integer(lexer* l) {
         lexer_advance(l);
     }
 
-    return init_token(TOKEN_INTEGER_VALUE, buffer); 
+    if (l->current_char == '.') {
+        free(current_char_str);
+        current_char_str = calloc(2, sizeof(char));
+        current_char_str[0] = l->current_char;
+        current_char_str[1] = '\0';
+        strcat(buffer, current_char_str);
+
+        lexer_advance(l);
+        type = TOKEN_FLOAT_VALUE;
+
+        while (isdigit(l->current_char)) {
+            free(current_char_str);
+            current_char_str = calloc(2, sizeof(char));
+            current_char_str[0] = l->current_char;
+            current_char_str[1] = '\0';
+
+            strcat(buffer, current_char_str);
+
+            lexer_advance(l);
+        }
+    }
+
+    return init_token(type, buffer); 
 }
 
 /**
@@ -168,7 +194,7 @@ token* lexer_get_next_token(lexer* l) {
             lexer_skip_whitespace(l);
 
         if (isdigit(l->current_char))
-            return lexer_collect_integer(l);
+            return lexer_collect_number(l);
 
         if (isalnum(l->current_char))
             return lexer_collect_id(l); 

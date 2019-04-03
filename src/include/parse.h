@@ -7,6 +7,7 @@
 #include "ASTCompound.h"
 #include "ASTBinop.h"
 #include "ASTInteger.h"
+#include "ASTFloat.h"
 #include "ASTString.h"
 #include "ASTDatatype.h"
 #include "ASTFunctionDefinition.h"

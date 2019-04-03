@@ -4,7 +4,7 @@ class Person {
 
     function constructor(name: string) {
         this.name = name;
-        this.age = 10;
+        this.age = 10.5;
     };
 
     function sayName():void {

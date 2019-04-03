@@ -7,6 +7,7 @@ typedef struct AST_STRUCT {
         AST_BINOP,
         AST_VARIABLE,
         AST_INTEGER,
+        AST_FLOAT,
         AST_STRING,
         AST_COMPOUND,
         AST_DATATYPE,

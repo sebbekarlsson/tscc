@@ -210,6 +210,11 @@ AST* parser_parse_factor(parser* p, scope* s) {
         return (AST*) init_ast_integer(t);
     }
 
+    if (t->type == TOKEN_FLOAT_VALUE) {
+        parser_eat(p, TOKEN_FLOAT_VALUE);
+        return (AST*) init_ast_float(t);
+    }
+
     if (t->type == TOKEN_LPAREN) {
         parser_eat(p, TOKEN_LPAREN);
         AST* expr = parser_parse_expr(p, s);
