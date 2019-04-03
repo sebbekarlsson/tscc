@@ -6,6 +6,7 @@
 
 - [x] Function definitions
 - [x] Data types (string, number, null, void, undefined)
+- [x] Arrays (sort of)
 - [x] Function calls
 - [x] If
 - [x] Else
@@ -40,12 +41,6 @@
 > String concatenation does not work:
 ```typescript
     let name:string = "john " + "doe";
-```
-
-### Array initialization
-> Array initialization does not work:
-```typescript
-    let mylist:string[] = ["john", "doe"];
 ```
 
 ### For loops

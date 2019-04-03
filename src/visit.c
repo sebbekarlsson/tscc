@@ -70,6 +70,9 @@ void visit(AST* node, outputbuffer* opb) {
         case AST_WHILE:
             return visit_ast_while((AST_while*) node, opb);
         break;
+        case AST_ARRAY:
+            return visit_ast_array((AST_array*) node, opb);
+        break;
     }
 }
 
@@ -149,9 +152,6 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
         buff(opb, "void*");
     else
         buff(opb, "void");
-
-    if (node->is_list)
-        buff(opb, "*");
 }
 
 /**
@@ -241,13 +241,16 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
             buff(opb, oi->function_call->name);
             buff(opb, "*");
         } else {
-            visit((AST*) node->datatype, opb);
+            visit((AST*) node->datatype, opb); 
         }
     } else {
         visit((AST*) node->datatype, opb);
     }
     buff(opb, " ");
     visit(node->left, opb);
+
+    if (node->datatype->is_list)
+        buff(opb, "[]");
     
     if (node->value) {
         if (node->value->type == AST_UNDEFINED)
@@ -496,4 +499,23 @@ void visit_ast_while(AST_while* node, outputbuffer* opb) {
     buff(opb, ") {\n");
     visit((AST*) node->compound, opb);
     buff(opb, "\n}");
+}
+
+/**
+ * Visitor for AST_array node
+ *
+ * @param AST_array* node
+ * @param outputbuffer* opb
+ */
+void visit_ast_array(AST_array* node, outputbuffer* opb) {
+    // TODO: output some sort of dynamic list here instead.
+    
+    buff(opb, "{");
+    for (int i = 0; i < node->elements->size; i++) {
+        visit((AST*) node->elements->items[i], opb);
+
+        if (i < node->elements->size - 1)
+            buff(opb, ", ");
+    }
+    buff(opb, "}");
 }
