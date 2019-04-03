@@ -70,6 +70,15 @@
     let age:number = 33.5;
 ```
 
+### Interfaces
+> Interfaces are currently not supported
+```typescript
+    interface LabeledValue {
+        label: string;
+        value: number;
+    }
+```
+
 ### Too many semi colons
 > The output basically looks like this right now:
 ```c
