@@ -65,9 +65,13 @@
 ```
 
 ### Floating point numbers
-> Floating point numbers does not work:
+> Floating point numbers are malformed when compiled, the following code:
 ```typescript
     let age:number = 33.5;
+```
+> Becomes this when compiled (`int`):
+```c
+    int age = 33.5;
 ```
 
 ### Interfaces
