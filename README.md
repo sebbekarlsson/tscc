@@ -83,6 +83,16 @@
     }
 ```
 
+### Exports & Imports
+> Exports and imports are currently not supported:
+```typescript
+    export * from "./ZipCodeValidator";  // exports class 'ZipCodeValidator
+
+    ...
+
+    import { ZipCodeValidator } from "./ZipCodeValidator";
+```
+
 ### Too many semi colons
 > The output basically looks like this right now:
 ```c
