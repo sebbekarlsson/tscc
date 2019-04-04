@@ -532,26 +532,18 @@ void visit_ast_while(AST_while* node, outputbuffer* opb) {
  * @param outputbuffer* opb
  */
 void visit_ast_array(AST_array* node, outputbuffer* opb) {
-    // TODO: output some sort of dynamic list here instead.
-    
-    /*buff(opb, "{");
-    for (int i = 0; i < node->elements->size; i++) {
-        visit((AST*) node->elements->items[i], opb);
-
-        if (i < node->elements->size - 1)
-            buff(opb, ", ");
-    }
-    buff(opb, "}");*/
-
     buff(opb, "init_dynamic_list(sizeof(");
     if (node->datatype)
         visit((AST*) node->datatype, opb);
     else {
-        if (((AST*)node->elements->items[0])->type == AST_STRING) {
+        if (((AST*)node->elements->items[0])->type == AST_STRING)
             buff(opb, "char*");
-        } else {
+        else if (((AST*)node->elements->items[0])->type == AST_INTEGER)
+            buff(opb, "int");
+        else if (((AST*)node->elements->items[0])->type == AST_FLOAT)
+            buff(opb, "float");
+        else
             buff(opb, "void*");
-        }
     }
     buff(opb, "));\n");
 
