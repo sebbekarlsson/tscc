@@ -2,33 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-const char* BOOTSTRAP_SRC =
-"typedef struct CONSOLE_STRUCT {\n"
-"    void* (*log)(void* self, char* inp);\n"
-"} console_t;"
-"\n"
-"void console_log(console_t* console, char* inp) {\n"
-    "printf(inp);"
-"}"
-"\n"
-"console_t* init_console() {\n"
-"    console_t* console = calloc(1, sizeof(struct CONSOLE_STRUCT));\n"
-"    console->log = console_log;\n"
-"    return console;\n"
-"}\n"
-"\n"
-"console_t* console;"
-"\n"
-"\n"
-"char charAt(char* value, int index) {\n"
-"    return value[index];"
-"}"
-"\n"
-"\n"
-"void bootstrap() {\n"
-"    console = init_console();"
-"}\n";
-
+const char* BOOTSTRAP_SRC = "#include <tscc/bootstrap.h>\n";
 
 outputbuffer* init_outputbuffer() {
     outputbuffer* opb = calloc(1, sizeof(struct OUTPUTBUFFER_STRUCT));

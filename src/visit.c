@@ -161,7 +161,9 @@ void visit_ast_compound(AST_compound* node, outputbuffer* opb) {
 void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
     AST* a = (AST*) node;
 
-    if (strcmp(a->token->value, "number") == 0)
+    if (node->is_list)
+        buff(opb, "dynamic_list* ");
+    else if (strcmp(a->token->value, "number") == 0)
         buff(opb, "int");
     else if (strcmp(a->token->value, "string") == 0)
         buff(opb, "char*");
@@ -266,8 +268,8 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
     buff(opb, " ");
     visit(node->left, opb);
 
-    if (node->datatype->is_list)
-        buff(opb, "[]");
+    //if (node->datatype->is_list)
+    //    buff(opb, "[]");
     
     if (node->value) {
         if (node->value->type == AST_UNDEFINED)
@@ -527,12 +529,30 @@ void visit_ast_while(AST_while* node, outputbuffer* opb) {
 void visit_ast_array(AST_array* node, outputbuffer* opb) {
     // TODO: output some sort of dynamic list here instead.
     
-    buff(opb, "{");
+    /*buff(opb, "{");
     for (int i = 0; i < node->elements->size; i++) {
         visit((AST*) node->elements->items[i], opb);
 
         if (i < node->elements->size - 1)
             buff(opb, ", ");
     }
-    buff(opb, "}");
+    buff(opb, "}");*/
+
+    buff(opb, "init_dynamic_list(sizeof(");
+    if (node->datatype)
+        visit((AST*) node->datatype, opb);
+    else {
+        if (((AST*)node->elements->items[0])->type == AST_STRING) {
+            buff(opb, "char*");
+        } else {
+            buff(opb, "void*");
+        }
+    }
+    buff(opb, "));\n");
+
+    for (int i = 0; i < node->elements->size; i++) {
+        buff(opb, "dynamic_list_append(");
+        visit((AST*) node->elements->items[i], opb);
+        buff(opb, ");\n");
+    }
 }

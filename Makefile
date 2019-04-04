@@ -10,6 +10,11 @@ $(exec): $(objects)
 %.o: %.c include/%.h
 	gcc -c $(flags) $< -o $@
 
+install:
+	-rm -rf /usr/local/include/tscc
+	mkdir -p /usr/local/include/tscc
+	cp bootstrap/bootstrap.h /usr/local/include/tscc/.
+
 clean:
 	-rm *.out
 	-rm *.o
