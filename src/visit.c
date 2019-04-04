@@ -532,7 +532,14 @@ void visit_ast_while(AST_while* node, outputbuffer* opb) {
  * @param outputbuffer* opb
  */
 void visit_ast_array(AST_array* node, outputbuffer* opb) {
+    AST_variable_definition* vd = (void*) 0;
+
+    if (node->self)
+        if (node->self->type == AST_VARIABLE_DEFINITION)
+            vd = (AST_variable_definition*) node->self;
+
     buff(opb, "init_dynamic_list(sizeof(");
+
     if (node->datatype)
         visit((AST*) node->datatype, opb);
     else {
@@ -545,25 +552,24 @@ void visit_ast_array(AST_array* node, outputbuffer* opb) {
         else
             buff(opb, "void*");
     }
+
     buff(opb, "));\n");
 
     for (int i = 0; i < node->elements->size; i++) {
         buff(opb, "dynamic_list_append(");
-        if (node->self) {
-            if (node->self->type == AST_VARIABLE_DEFINITION) {
-                AST_variable_definition* vd = (AST_variable_definition*) node->self;
 
-                // I really dont see a situation where this would NOT be a AST_variable.
-                // TODO: fix.
-                if (vd->left->type == AST_VARIABLE) {
-                    AST_variable* v = (AST_variable*) vd->left;
-                    visit((AST*) v, opb);
+        if (vd) {
+            // I really dont see a situation where this would NOT be a AST_variable.
+            // TODO: fix.
+            if (vd->left->type == AST_VARIABLE) {
+                AST_variable* v = (AST_variable*) vd->left;
+                visit((AST*) v, opb);
 
-                    if (i < node->elements->size)
-                        buff(opb, ", ");
-                }
+                if (i < node->elements->size)
+                    buff(opb, ", ");
             }
         }
+
         visit((AST*) node->elements->items[i], opb);
         buff(opb, ");\n");
     }
