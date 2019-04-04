@@ -8,6 +8,7 @@ AST_array* init_ast_array(token* t, AST_datatype* datatype, dynamic_list* elemen
 
     array->datatype = datatype;
     array->elements = elements;
+    array->self = (void*) 0;
 
     return array;
 }

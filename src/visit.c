@@ -275,6 +275,11 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
         if (node->value->type == AST_UNDEFINED)
             return;
 
+        if (node->value->type == AST_ARRAY) {
+            AST_array* array = (AST_array*) node->value;
+            array->self = (AST*) node;
+        }
+
         buff(opb, " = ");
         visit(node->value, opb);
     }
@@ -552,6 +557,21 @@ void visit_ast_array(AST_array* node, outputbuffer* opb) {
 
     for (int i = 0; i < node->elements->size; i++) {
         buff(opb, "dynamic_list_append(");
+        if (node->self) {
+            if (node->self->type == AST_VARIABLE_DEFINITION) {
+                AST_variable_definition* vd = (AST_variable_definition*) node->self;
+
+                // I really dont see a situation where this would NOT be a AST_variable.
+                // TODO: fix.
+                if (vd->left->type == AST_VARIABLE) {
+                    AST_variable* v = (AST_variable*) vd->left;
+                    visit((AST*) v, opb);
+
+                    if (i < node->elements->size)
+                        buff(opb, ", ");
+                }
+            }
+        }
         visit((AST*) node->elements->items[i], opb);
         buff(opb, ");\n");
     }
