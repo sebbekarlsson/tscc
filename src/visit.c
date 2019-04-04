@@ -84,9 +84,26 @@ void visit(AST* node, outputbuffer* opb) {
  */
 void visit_ast_binop(AST_binop* node, outputbuffer* opb) {
     //buff(opb, "(");
-    visit(node->left, opb);
-    buff(opb, ((AST*)node)->token->value);
-    visit(node->right, opb);
+    if (node->left->type == AST_STRING) {
+    }
+    {
+        if (node->left->type == AST_STRING) {
+            visit(node->left, opb);
+        } else {
+            visit(node->left, opb);
+
+            if (!node->left->type == AST_BINOP)
+            buff(opb, ((AST*)node)->token->value);
+        }
+
+        if (node->right->type == AST_STRING) {
+            visit(node->right, opb);
+        } else {
+            visit(node->right, opb);
+        }
+    }
+    //if (node->left->type == AST_BINOP)
+    //buff(opb, "})");
     //buff(opb, ")");
 }
 

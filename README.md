@@ -10,7 +10,8 @@
 - [x] Function calls
 - [x] If
 - [x] Else
-- [X] While loops
+- [x] While loops
+- [x] Static string concatenation (`"hello " + "world"`)
 - [x] Automatically detect requirements and inject #include tags
 - [x] `==` - comparison
 - [x] `!=` - comparison
@@ -37,12 +38,6 @@
 ```
 
 ## Known issues
-### String concatenation
-> String concatenation does not work:
-```typescript
-    let name:string = "john " + "doe";
-```
-
 ### For loops
 > For loops does not work:
 ```typescript
