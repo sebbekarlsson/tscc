@@ -19,4 +19,7 @@ function main(argc: number, argv: string[]):void {
     let otherexpr:number = 1 != 2;
 
     let x:undefined = undefined;
+
+    let xyz:string = "hello " + "world" + "yo \n";
+    print(xyz);
 }
