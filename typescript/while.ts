@@ -4,5 +4,5 @@ function main(argc: number, argv: string[]):number {
     while(x < 5) {
         print("hello");
         x = x + 1;
-    }
-};
+    }    
+}

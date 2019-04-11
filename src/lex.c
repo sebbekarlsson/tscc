@@ -37,8 +37,19 @@ void lexer_advance(lexer* l) {
  * @param lexer* l
  */
 void lexer_skip_whitespace(lexer* l) {
-    while (l->current_char == ' ' || (int) l->current_char == 10)
+    while (lexer_is_whitespace(l))
         lexer_advance(l);
+}
+
+/**
+ * Check with the lexer instance if the current token is a whitespace 
+ *
+ * @param lexer* l 
+ * 
+ * @return int
+ */
+int lexer_is_whitespace(lexer* l) {
+	return l->current_char == ' ' || (int)l->current_char == 10 || l->current_char == '\r';
 }
 
 /**
@@ -68,30 +79,32 @@ token* lexer_collect_id(lexer* l) {
         lexer_advance(l);
     }
 
-    if (strcmp(buffer, "function") == 0)
-        type = TOKEN_FUNCTION_TYPE;
-    else if (strcmp(buffer, "number") == 0)
-        type = TOKEN_INTEGER_TYPE;
-    else if (strcmp(buffer, "string") == 0)
-        type = TOKEN_STRING_TYPE;
-    else if (strcmp(buffer, "void") == 0)
-        type = TOKEN_VOID_TYPE;
-    else if (strcmp(buffer, "null") == 0)
-        type = TOKEN_NULL_TYPE;
-    else if (strcmp(buffer, "undefined") == 0)
-        type = TOKEN_UNDEFINED_TYPE;
-    else if (strcmp(buffer, "let") == 0)
-        type = TOKEN_LET;
-    else if (strcmp(buffer, "if") == 0)
-        type = TOKEN_IF;
-    else if (strcmp(buffer, "else") == 0)
-        type = TOKEN_ELSE;
-    else if (strcmp(buffer, "class") == 0)
-        type = TOKEN_CLASS_TYPE;
-    else if (strcmp(buffer, "new") == 0)
-        type = TOKEN_NEW;
-    else if (strcmp(buffer, "while") == 0)
-        type = TOKEN_WHILE;
+	if (strcmp(buffer, "function") == 0)
+		type = TOKEN_FUNCTION_TYPE;
+	else if (strcmp(buffer, "number") == 0)
+		type = TOKEN_INTEGER_TYPE;
+	else if (strcmp(buffer, "string") == 0)
+		type = TOKEN_STRING_TYPE;
+	else if (strcmp(buffer, "void") == 0)
+		type = TOKEN_VOID_TYPE;
+	else if (strcmp(buffer, "null") == 0)
+		type = TOKEN_NULL_TYPE;
+	else if (strcmp(buffer, "undefined") == 0)
+		type = TOKEN_UNDEFINED_TYPE;
+	else if (strcmp(buffer, "let") == 0)
+		type = TOKEN_LET;
+	else if (strcmp(buffer, "if") == 0)
+		type = TOKEN_IF;
+	else if (strcmp(buffer, "else") == 0)
+		type = TOKEN_ELSE;
+	else if (strcmp(buffer, "class") == 0)
+		type = TOKEN_CLASS_TYPE;
+	else if (strcmp(buffer, "new") == 0)
+		type = TOKEN_NEW;
+	else if (strcmp(buffer, "while") == 0)
+		type = TOKEN_WHILE;
+	else if (strcmp(buffer, "return") == 0)
+		type = TOKEN_RETURN;
 
     return init_token(type, buffer);
 }
@@ -190,8 +203,11 @@ token* lexer_collect_number(lexer* l) {
  */
 token* lexer_get_next_token(lexer* l) {
     while (l->current_char != '\0' && l->pointer < strlen(l->contents) - 1) {
-        if (l->current_char == ' ' || (int) l->current_char == 10)
+        if (lexer_is_whitespace(l))
             lexer_skip_whitespace(l);
+
+		if (l->current_char == '\0')
+			return init_token(TOKEN_EOF, "\0");
 
         if (isdigit(l->current_char))
             return lexer_collect_number(l);
@@ -204,10 +220,6 @@ token* lexer_get_next_token(lexer* l) {
         current_char_str[1] = '\0';
 
         switch (l->current_char) {
-			case '\r': {
-				lexer_advance(l);
-				continue;
-			} break;
             case '(': {
                 token* t = init_token(TOKEN_LPAREN, current_char_str);
                 lexer_advance(l);

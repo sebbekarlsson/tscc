@@ -12,6 +12,7 @@
 #include "ASTVariableDefinition.h"
 #include "ASTFunctionCall.h"
 #include "ASTIf.h"
+#include "ASTReturn.h"
 #include "ASTNull.h"
 #include "ASTClass.h"
 #include "ASTUndefined.h"
@@ -43,6 +44,8 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
 void visit_ast_function_call(AST_function_call* node, outputbuffer* opb);
 
 void visit_ast_if(AST_if* node, outputbuffer* opb);
+
+void visit_ast_return_statement(AST_return* node, outputbuffer* opb);
 
 void visit_ast_null(AST_null* node, outputbuffer* opb);
 

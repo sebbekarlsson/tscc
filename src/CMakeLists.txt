@@ -11,6 +11,7 @@ set(INCLUDE_SRC
     include/ASTFunctionCall.h
     include/ASTFunctionDefinition.h
     include/ASTIf.h
+    include/ASTReturn.h
     include/ASTInteger.h
     include/ASTNull.h
     include/ASTObjectInit.h
@@ -19,6 +20,16 @@ set(INCLUDE_SRC
     include/ASTVariable.h
     include/ASTVariableDefinition.h
     include/ASTWhile.h
+    include/dynamic_list.h
+    include/io.h
+    include/lex.h
+    include/outputbuffer.h
+    include/parse.h
+    include/remap.h
+    include/scope.h
+    include/strutils.h
+    include/token.h
+    include/visit.h
 )
 
 set(AST_SRC
@@ -34,6 +45,7 @@ set(AST_SRC
     ASTFunctionCall.c
     ASTFunctionDefinition.c
     ASTIf.c
+    ASTReturn.c
     ASTInteger.c
     ASTNull.c
     ASTObjectInit.c

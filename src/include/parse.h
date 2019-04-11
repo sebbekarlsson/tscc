@@ -14,6 +14,7 @@
 #include "ASTVariableDefinition.h"
 #include "ASTFunctionCall.h"
 #include "ASTIf.h"
+#include "ASTReturn.h"
 #include "ASTNull.h"
 #include "ASTClass.h"
 #include "ASTUndefined.h"
@@ -33,6 +34,10 @@ parser* init_parser(lexer* l);
 
 void parser_eat(parser* p, int token_type);
 
+void parser_consume(parser* p, int token_type);
+
+AST_compound* parser_parse_body(parser* p, scope* s);
+
 AST_compound* parser_parse(parser* p, scope* s);
 
 AST_compound* parser_parse_compound(parser* p, scope* s);
@@ -51,7 +56,11 @@ AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s);
 
 AST_datatype* parser_parse_data_type(parser* p, scope* s);
 
+AST_datatype* parser_solve_data_type(parser* p, scope* s, AST* value);
+
 AST* parser_parse_id(parser* p, scope* s);
+
+AST_return* parser_parse_return(parser* p, scope* s);
 
 AST_function_call* parser_parse_function_call(parser* p, scope* s, token* t);
 
