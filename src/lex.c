@@ -204,6 +204,10 @@ token* lexer_get_next_token(lexer* l) {
         current_char_str[1] = '\0';
 
         switch (l->current_char) {
+			case '\r': {
+				lexer_advance(l);
+				continue;
+			} break;
             case '(': {
                 token* t = init_token(TOKEN_LPAREN, current_char_str);
                 lexer_advance(l);

@@ -11,40 +11,49 @@
 scope* GLOBAL_SCOPE;
 
 int main(int argc, char* argv[]) {
-    char* contents = read_file(argv[1]);
+	
+	if (argc <= 1) {
+		printf("Invalid amount of parameters, expected input filename.\r\n\r\n");
+		printf("Usage:\r\n");
+		printf("  tscc.exe <filename>");
+		printf("\r\n\r\n");
+		return -1;
+	}	
+	
+	char* contents = read_file(argv[1]);
+	
+	GLOBAL_SCOPE = init_scope((void*)0);
 
-    GLOBAL_SCOPE = init_scope((void*) 0);
+	lexer* l = init_lexer(contents);
+	parser* p = init_parser(l);
 
-    lexer* l = init_lexer(contents);
-    parser* p = init_parser(l);
+	AST* tree = (AST*)parser_parse(p, GLOBAL_SCOPE);
 
-    AST* tree = (AST*) parser_parse(p, GLOBAL_SCOPE);
-    
-    outputbuffer* opb = init_outputbuffer();
+	outputbuffer* opb = init_outputbuffer();
 
-    visit(tree, opb);
+	visit(tree, opb);
 
-    char* output = outputbuffer_get(opb);
+	char* output = outputbuffer_get(opb);
 
-    printf(output);
+	printf(output);
 
-    /**
-     * TODO: make this memory cleaning below prettier
-     */
+	/**
+	 * TODO: make this memory cleaning below prettier
+	 */
 
-    free(output);
+	free(output);
 
-    free(contents);
-    free(opb->buffer);
+	free(contents);
+	free(opb->buffer);
 
-    free(opb->requirements->items);
-    free(opb->requirements);
-    free(opb);
+	free(opb->requirements->items);
+	free(opb->requirements);
+	free(opb);
 
-    free(p->current_token);
-    free(p);
-    free(l);
-    free(tree);
+	free(p->current_token);
+	free(p);
+	free(l);
+	free(tree);
 
-    return 0;
+	return 0;
 }
