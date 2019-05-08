@@ -38,7 +38,7 @@ typedef struct TOKEN_STRUCT {
         TOKEN_CLASS_TYPE,
         TOKEN_NEW,
         TOKEN_WHILE,
-		TOKEN_RETURN
+        TOKEN_RETURN
     } type;
 
     char* value;

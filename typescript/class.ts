@@ -15,6 +15,10 @@ class Person {
     function becomeOlder():void {
         this.age = this.age + 1;
     };
+
+    function getAge():number {
+        return this.age;
+    };
 };
 
 
@@ -29,5 +33,6 @@ function main(argc: number, argv: string[]):number {
     person.becomeOlder();
     person.becomeOlder();
     person.sayName();
+    person.getAge();
     console.log("This is a console.log!\n");
 };

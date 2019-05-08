@@ -14,6 +14,8 @@ void lexer_advance(lexer* l);
 
 void lexer_skip_whitespace(lexer* l);
 
+int lexer_is_whitespace(lexer* l);
+
 token* lexer_collect_id(lexer* l);
 
 token* lexer_collect_string(lexer* l);

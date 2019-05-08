@@ -9,4 +9,4 @@ typedef struct AST_RETURN_STRUCT {
 } AST_return;
 
 AST_return* init_ast_return(token* t, AST* statement);
-#endif}
+#endif

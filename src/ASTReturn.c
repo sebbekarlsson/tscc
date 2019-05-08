@@ -3,9 +3,9 @@
 
 
 AST_return* init_ast_return(token* t, AST* statement) {
-	AST_return* returnStatement = calloc(1, sizeof(struct AST_RETURN_STRUCT));
-	AST_constructor((AST*)returnStatement, t, AST_RETURN);
+	AST_return* return_statement = calloc(1, sizeof(struct AST_RETURN_STRUCT));
+	AST_constructor((AST*)return_statement, t, AST_RETURN);
 
-	returnStatement->statement = statement;
-	return returnStatement;
+	return_statement->statement = statement;
+	return return_statement;
 }

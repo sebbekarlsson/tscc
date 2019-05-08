@@ -80,31 +80,31 @@ token* lexer_collect_id(lexer* l) {
     }
 
 	if (strcmp(buffer, "function") == 0)
-		type = TOKEN_FUNCTION_TYPE;
+	    type = TOKEN_FUNCTION_TYPE;
 	else if (strcmp(buffer, "number") == 0)
-		type = TOKEN_INTEGER_TYPE;
+	    type = TOKEN_INTEGER_TYPE;
 	else if (strcmp(buffer, "string") == 0)
-		type = TOKEN_STRING_TYPE;
+	    type = TOKEN_STRING_TYPE;
 	else if (strcmp(buffer, "void") == 0)
-		type = TOKEN_VOID_TYPE;
+	    type = TOKEN_VOID_TYPE;
 	else if (strcmp(buffer, "null") == 0)
-		type = TOKEN_NULL_TYPE;
+	    type = TOKEN_NULL_TYPE;
 	else if (strcmp(buffer, "undefined") == 0)
-		type = TOKEN_UNDEFINED_TYPE;
+	    type = TOKEN_UNDEFINED_TYPE;
 	else if (strcmp(buffer, "let") == 0)
-		type = TOKEN_LET;
+	    type = TOKEN_LET;
 	else if (strcmp(buffer, "if") == 0)
-		type = TOKEN_IF;
+	    type = TOKEN_IF;
 	else if (strcmp(buffer, "else") == 0)
-		type = TOKEN_ELSE;
+	    type = TOKEN_ELSE;
 	else if (strcmp(buffer, "class") == 0)
-		type = TOKEN_CLASS_TYPE;
+	    type = TOKEN_CLASS_TYPE;
 	else if (strcmp(buffer, "new") == 0)
-		type = TOKEN_NEW;
+	    type = TOKEN_NEW;
 	else if (strcmp(buffer, "while") == 0)
-		type = TOKEN_WHILE;
+	    type = TOKEN_WHILE;
 	else if (strcmp(buffer, "return") == 0)
-		type = TOKEN_RETURN;
+	    type = TOKEN_RETURN;
 
     return init_token(type, buffer);
 }
