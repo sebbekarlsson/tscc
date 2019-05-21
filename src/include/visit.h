@@ -22,6 +22,7 @@
 #include "ASTAssignment.h"
 #include "ASTWhile.h"
 #include "ASTArray.h"
+#include "ASTComment.h"
 
 void visit(AST* node, outputbuffer* opb);
 

@@ -75,8 +75,12 @@ AST_compound* parser_parse_compound(parser* p, scope* s) {
     AST* statement = parser_parse_statement(p, s);
     dynamic_list_append(children, statement);
 
-    while (p->current_token->type == TOKEN_SEMI) {
-        parser_eat(p, TOKEN_SEMI);
+    while (p->current_token->type == TOKEN_SEMI || p->current_token->type == TOKEN_COMMA) {
+        if (p->current_token->type == TOKEN_SEMI)
+            parser_eat(p, TOKEN_SEMI);
+        else
+            parser_eat(p, TOKEN_COMMA);
+
         statement = parser_parse_statement(p, s);
         dynamic_list_append(children, statement);
     }
@@ -143,6 +147,15 @@ AST* parser_parse_statement(parser* p, scope* s) {
         return (AST*)parser_parse_variable_definition(p, s);
     }
 
+    if (p->current_token->type == TOKEN_VAR || p->current_token->type == TOKEN_COMMA) {
+        if (p->current_token->type == TOKEN_VAR)
+            parser_eat(p, TOKEN_VAR);
+        else
+            parser_eat(p, TOKEN_COMMA);
+
+        return (AST*)parser_parse_variable_definition(p, s);
+    }
+
     if (p->current_token->type == TOKEN_IF) {
         return (AST*)parser_parse_if(p, s);
     }
@@ -154,8 +167,16 @@ AST* parser_parse_statement(parser* p, scope* s) {
     if (p->current_token->type == TOKEN_WHILE) {
         return (AST*)parser_parse_while(p, s);
     }
+    if (p->current_token->type == TOKEN_FOR) {
+        return (AST*)parser_parse_for(p, s);
+    }
     if (p->current_token->type == TOKEN_RETURN) {
         return (AST*)parser_parse_return(p, s);
+    }
+    if (p->current_token->type == TOKEN_COMMENT_VALUE) {
+        AST* a = (AST*)init_ast_comment(p->current_token);
+        parser_eat(p, TOKEN_COMMENT_VALUE);
+        return a;
     }
 
     return (void*)0;
@@ -176,6 +197,7 @@ AST* parser_parse_expr(parser* p, scope* s) {
 
     while (
         p->current_token->type == TOKEN_PLUS ||
+        p->current_token->type == TOKEN_MINUS ||
         p->current_token->type == TOKEN_EQUALS_EQUALS ||
         p->current_token->type == TOKEN_NOT_EQUALS ||
         p->current_token->type == TOKEN_EQUALS ||
@@ -186,6 +208,9 @@ AST* parser_parse_expr(parser* p, scope* s) {
 
         if (p->current_token->type == TOKEN_PLUS) {
             parser_eat(p, TOKEN_PLUS);
+        }
+        if (p->current_token->type == TOKEN_MINUS) {
+            parser_eat(p, TOKEN_MINUS);
         }
         else if (p->current_token->type == TOKEN_EQUALS_EQUALS) {
             parser_eat(p, TOKEN_EQUALS_EQUALS);
@@ -310,6 +335,10 @@ AST* parser_parse_factor(parser* p, scope* s) {
 
     if (t->type == TOKEN_LBRACKET) {
         return (AST*)parser_parse_array(p, s);
+    }
+
+    if (t->type == TOKEN_COMMENT_VALUE) {
+        parser_eat(p, TOKEN_COMMENT_VALUE);
     }
 
     return parser_parse_expr(p, s);
@@ -440,7 +469,7 @@ AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s) {
     AST* left = parser_parse_expr(p, s);
     AST* value = (void*)0;
     AST_datatype* datatype = (void*)0;
-
+    
     // take apart the assignment statement for "any" type definitions
     if (left->type == AST_ASSIGNMENT) {
         AST_assignment* assignment = (AST_assignment*)left;
@@ -450,16 +479,16 @@ AST_variable_definition* parser_parse_variable_definition(parser* p, scope* s) {
         //              or it will throw a node->datatype was nullptr in the output
         datatype = parser_solve_data_type(p, s, value);
     }
-    else {
-        if (p->current_token->type == TOKEN_COLON) {
-            parser_eat(p, TOKEN_COLON);
-            datatype = parser_parse_data_type(p, s);
-        }
 
-        if (p->current_token->type == TOKEN_EQUALS) {
-            parser_eat(p, TOKEN_EQUALS);
-            value = parser_parse_expr(p, s);
-        }
+    
+    if (p->current_token->type == TOKEN_COLON) {
+        parser_eat(p, TOKEN_COLON);
+        datatype = parser_parse_data_type(p, s);
+    }
+
+    if (p->current_token->type == TOKEN_EQUALS) {
+        parser_eat(p, TOKEN_EQUALS);
+        value = parser_parse_expr(p, s);
     }
 
     return init_ast_variable_definition(p->current_token, left, value, datatype);
@@ -494,6 +523,9 @@ AST_datatype* parser_parse_data_type(parser* p, scope* s) {
     case TOKEN_UNDEFINED_TYPE:
         parser_eat(p, TOKEN_UNDEFINED_TYPE);
         break;
+    case TOKEN_i32_TYPE:
+        parser_eat(p, TOKEN_i32_TYPE);
+        break;
     default:
         printf("Unexpected data_type %s\n", p->current_token->value);
         exit(1);
@@ -525,7 +557,7 @@ AST_datatype* parser_solve_data_type(parser* p, scope* s, AST* statement) {
 
         int isList = 0;
         int type = TOKEN_FLOAT_VALUE;
-        char* typeName = "number";
+        char* type_name = "number";
 
         // AST_FLOAT: default
         if (statement->type == AST_BINOP) {
@@ -538,21 +570,21 @@ AST_datatype* parser_solve_data_type(parser* p, scope* s, AST* statement) {
 
         if (statement->type == AST_STRING) {
             type = TOKEN_STRING_TYPE;
-            typeName = "string";
+            type_name = "string";
         }
 
         if (statement->type == AST_ARRAY) {
             isList = 1;
-            typeName = "[]";
+            type_name = "[]";
             // defaults to integer.
             type = TOKEN_INTEGER_TYPE;
         }
 
         // note(kalle): urgh, would need a separate parameter that sets the type rather than on the token
-        return init_ast_datatype(init_token(type, typeName), isList);
+        return init_ast_datatype(init_token(type, type_name), isList);
     }
 
-    return (void*)0;
+    return init_ast_datatype(init_token(TOKEN_VOID_POINTER_TYPE, "void"), 0);
 }
 
 /**
@@ -686,4 +718,31 @@ AST_array* parser_parse_array(parser* p, scope* s) {
     parser_eat(p, TOKEN_RBRACKET);
 
     return init_ast_array(p->current_token, datatype, elements);
+}
+
+AST_for* parser_parse_for(parser* p, scope* s) {
+    parser_eat(p, TOKEN_FOR);
+    parser_eat(p, TOKEN_LPAREN);
+    dynamic_list* expressions = init_dynamic_list(sizeof(struct AST_STRUCT));
+
+    AST* expr = parser_parse_statement(p, s);
+
+    if (expr)
+        dynamic_list_append(expressions, expr);
+
+    while (p->current_token->type == TOKEN_SEMI) {
+        parser_eat(p, TOKEN_SEMI);
+        
+        AST* e = parser_parse_statement(p, s);
+
+        if (e)
+            dynamic_list_append(expressions, e);
+    }
+
+    parser_eat(p, TOKEN_RPAREN);
+    parser_eat(p, TOKEN_LBRACE);
+    AST_compound* compound = parser_parse_compound(p, s);
+    parser_eat(p, TOKEN_RBRACE);
+
+    return init_ast_for(p->current_token, expressions, compound);
 }

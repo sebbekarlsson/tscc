@@ -23,7 +23,9 @@ typedef struct AST_STRUCT {
         AST_ASSIGNMENT,
         AST_WHILE,
         AST_ARRAY,
-        AST_RETURN
+        AST_RETURN,
+        AST_COMMENT,
+        AST_FOR
     } type;
 
     token* token;

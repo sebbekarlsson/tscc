@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 const char* BOOTSTRAP_SRC =
+"#include <stdint.h>\n\n"
 "typedef struct CONSOLE_STRUCT {\n"
 "    void* (*log)(void* self, char* inp);\n"
 "} console_t;"

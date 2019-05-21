@@ -16,46 +16,55 @@ void visit(AST* node, outputbuffer* opb) {
 		return;
 
 	switch (node->type) {
-	case AST_COMPOUND:
-		return visit_ast_compound((AST_compound*)node, opb);
-	case AST_BINOP:
-		return visit_ast_binop((AST_binop*)node, opb);
-	case AST_INTEGER:
-		return visit_ast_integer((AST_integer*)node, opb);
-	case AST_FLOAT:
-		return visit_ast_float((AST_float*)node, opb);
-	case AST_DATATYPE:
-		return visit_ast_datatype((AST_datatype*)node, opb);
-	case AST_FUNCTION_DEFINITION:
-		return visit_ast_function_definition((AST_function_definition*)node, opb);
-	case AST_VARIABLE_DEFINITION:
-		return visit_ast_variable_definition((AST_variable_definition*)node, opb);
-	case AST_FUNCTION_CALL:
-		return visit_ast_function_call((AST_function_call*)node, opb);
-	case AST_STRING:
-		return visit_ast_string((AST_string*)node, opb);
-	case AST_IF:
-		return visit_ast_if((AST_if*)node, opb);
-	case AST_RETURN:
-		return visit_ast_return_statement((AST_return*)node, opb);
-	case AST_NULL:
-		return visit_ast_null((AST_null*)node, opb);
-	case AST_CLASS:
-		return visit_ast_class((AST_class*)node, opb);
-	case AST_UNDEFINED:
-		return visit_ast_undefined((AST_undefined*)node, opb);
-	case AST_OBJECT_INIT:
-		return visit_ast_object_init((AST_object_init*)node, opb);
-	case AST_ATTRIBUTE_ACCESS:
-		return visit_ast_attribute_access((AST_attribute_access*)node, opb);
-	case AST_VARIABLE:
-		return visit_ast_variable((AST_variable*)node, opb);
-	case AST_ASSIGNMENT:
-		return visit_ast_assignment((AST_assignment*)node, opb);
-	case AST_WHILE:
-		return visit_ast_while((AST_while*)node, opb);
-	case AST_ARRAY:
-		return visit_ast_array((AST_array*)node, opb);
+        case AST_COMPOUND:
+            return visit_ast_compound((AST_compound*)node, opb);
+        case AST_BINOP:
+            return visit_ast_binop((AST_binop*)node, opb);
+        case AST_INTEGER:
+            return visit_ast_integer((AST_integer*)node, opb);
+        case AST_FLOAT:
+            return visit_ast_float((AST_float*)node, opb);
+        case AST_DATATYPE:
+            return visit_ast_datatype((AST_datatype*)node, opb);
+        case AST_FUNCTION_DEFINITION:
+            return visit_ast_function_definition((AST_function_definition*)node, opb);
+        case AST_VARIABLE_DEFINITION:
+            return visit_ast_variable_definition((AST_variable_definition*)node, opb);
+        case AST_FUNCTION_CALL:
+            return visit_ast_function_call((AST_function_call*)node, opb);
+        case AST_STRING:
+            return visit_ast_string((AST_string*)node, opb);
+        case AST_IF:
+            return visit_ast_if((AST_if*)node, opb);
+        case AST_RETURN:
+            return visit_ast_return_statement((AST_return*)node, opb);
+        case AST_NULL:
+            return visit_ast_null((AST_null*)node, opb);
+        case AST_CLASS:
+            return visit_ast_class((AST_class*)node, opb);
+        case AST_UNDEFINED:
+            return visit_ast_undefined((AST_undefined*)node, opb);
+        case AST_OBJECT_INIT:
+            return visit_ast_object_init((AST_object_init*)node, opb);
+        case AST_ATTRIBUTE_ACCESS:
+            return visit_ast_attribute_access((AST_attribute_access*)node, opb);
+        case AST_VARIABLE:
+            return visit_ast_variable((AST_variable*)node, opb);
+        case AST_ASSIGNMENT:
+            return visit_ast_assignment((AST_assignment*)node, opb);
+        case AST_WHILE:
+            return visit_ast_while((AST_while*)node, opb);
+        case AST_ARRAY:
+            return visit_ast_array((AST_array*)node, opb);
+        case AST_COMMENT: {
+            buff(opb, "/* ");
+            buff(opb, node->token->value); 
+            buff(opb, " */");
+            return;
+        } break;
+        case AST_FOR:
+            return; // not implemented yet
+        break;
 	}
 }
 
@@ -153,6 +162,10 @@ void visit_ast_datatype(AST_datatype* node, outputbuffer* opb) {
 		buff(opb, "char*");
 	else if (strcmp(a->token->value, "null") == 0 || strcmp(a->token->value, "undefined") == 0)
 		buff(opb, "void*");
+    else if (strcmp(a->token->value, "i32") == 0)
+		buff(opb, "int32_t");
+    else if (a->token->type == TOKEN_VOID_POINTER_TYPE)
+        buff (opb, "void*");
 	else
 		buff(opb, "void");
 }
@@ -256,8 +269,10 @@ void visit_ast_variable_definition(AST_variable_definition* node, outputbuffer* 
 	buff(opb, " ");
 	visit(node->left, opb);
 
-	if (node->datatype->is_list)
-		buff(opb, "[]");
+    if (node->datatype) {
+        if (node->datatype->is_list)
+            buff(opb, "[]");
+    }
 
 	if (node->value) {
 		if (node->value->type == AST_UNDEFINED)

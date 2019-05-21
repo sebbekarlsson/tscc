@@ -91,8 +91,12 @@ token* lexer_collect_id(lexer* l) {
 	    type = TOKEN_NULL_TYPE;
 	else if (strcmp(buffer, "undefined") == 0)
 	    type = TOKEN_UNDEFINED_TYPE;
+    else if (strcmp(buffer, "i32") == 0)
+	    type = TOKEN_i32_TYPE;
 	else if (strcmp(buffer, "let") == 0)
 	    type = TOKEN_LET;
+    else if (strcmp(buffer, "var") == 0)
+	    type = TOKEN_VAR;
 	else if (strcmp(buffer, "if") == 0)
 	    type = TOKEN_IF;
 	else if (strcmp(buffer, "else") == 0)
@@ -105,6 +109,8 @@ token* lexer_collect_id(lexer* l) {
 	    type = TOKEN_WHILE;
 	else if (strcmp(buffer, "return") == 0)
 	    type = TOKEN_RETURN;
+    else if (strcmp(buffer, "for") == 0)
+	    type = TOKEN_FOR;
 
     return init_token(type, buffer);
 }
@@ -140,6 +146,51 @@ token* lexer_collect_string(lexer* l) {
     lexer_advance(l);
 
     return init_token(TOKEN_STRING_VALUE, buffer); 
+}
+
+/**
+ * Collects a comment.
+ *
+ * @return token*
+ */
+token* lexer_collect_comment(lexer* l) {
+    char* buffer = calloc(2, sizeof(char));
+
+    char startchar = l->current_char;
+    
+    lexer_advance(l);
+
+    buffer[0] = l->current_char;
+    buffer[1] = '\0';
+
+    while (1) {
+        if (startchar == '/' && l->current_char == '\n') {
+            lexer_advance(l);
+            break;
+        }
+
+        if (startchar == '*' && l->current_char == '*') {
+            lexer_advance(l);
+
+            if (l->current_char == '/') {
+                lexer_advance(l);
+                break;
+            }
+        }
+
+        char* current_char_str = calloc(2, sizeof(char));
+        current_char_str[0] = l->current_char;
+        current_char_str[1] = '\0';
+
+        buffer = realloc(buffer, (strlen(buffer) + 2) * sizeof(char));
+
+        strcat(buffer, current_char_str);
+        free(current_char_str);
+
+        lexer_advance(l); 
+    }
+
+    return init_token(TOKEN_COMMENT_VALUE, buffer); 
 }
 
 /**
@@ -284,9 +335,15 @@ token* lexer_get_next_token(lexer* l) {
                 return t;
             } break;
             case '/': {
-                token* t = init_token(TOKEN_DIVIDE, current_char_str);
                 lexer_advance(l);
-                return t;
+                if (l->current_char == '/' || l->current_char == '*')
+                {
+                    return lexer_collect_comment(l);
+                }
+                else
+                {
+                    return init_token(TOKEN_DIVIDE, current_char_str);
+                }
             } break;
             case '*': {
                 token* t = init_token(TOKEN_MULTIPLY, current_char_str);
